@@ -30,7 +30,6 @@ public class Booking extends BaseEntity{
 	@NotNull
 	private String bookerEmail;
 	
-	@NotNull
 	private String bookerContact;
 	
 	private String message;

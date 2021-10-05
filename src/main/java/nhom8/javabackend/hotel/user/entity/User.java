@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,19 +25,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nhom8.javabackend.hotel.booking.entity.Booking;
-import nhom8.javabackend.hotel.booking.entity.Messages;
-import nhom8.javabackend.hotel.booking.entity.Review;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.review.entity.Review;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"favouritePosts"})
-@EqualsAndHashCode(exclude = {"favouritePosts"},callSuper = false)
+@ToString(exclude = {"favouritePost"})
+@EqualsAndHashCode(exclude = {"favouritePost"},callSuper = false)
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseEntity {
 	@NotNull
 	private String role;
@@ -52,6 +52,7 @@ public class User extends BaseEntity {
 	private String password;
 	
 	@NotNull
+	@Email
 	private String email;
 	
 	@NotNull
@@ -73,41 +74,41 @@ public class User extends BaseEntity {
 	
 	private String instagram;
 	
-	private String printertest;
+	private String pinterest;
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
-	@JoinTable(name = "favourite_Posts",
-	joinColumns = @JoinColumn(name ="user_id"),
-	inverseJoinColumns = @JoinColumn(name ="hotel_id"))
+	@JoinTable(name = "user_favourite_post",
+		joinColumns = @JoinColumn(name = "user_id"),
+		inverseJoinColumns = @JoinColumn(name = "hotel_id"))
 	@JsonIgnore
 	@Builder.Default
-	private Set<Hotel> favouritePosts=new HashSet<Hotel>();
+	private Set<Hotel> favouritePost = new HashSet<Hotel>();
 	
 	@OneToOne
-	@JoinColumn(name = "profile_image_id")
+	@JoinColumn(name = "profile_pic_id")
 	private UserImage profilePic;
 	
 	@OneToOne
-	@JoinColumn(name = "cover_image_id")
+	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
-	private Set<Hotel> hotels=new HashSet<Hotel>();
+	private Set<Hotel> listedPost = new HashSet<Hotel>();
 	
-	@OneToMany(mappedBy = "agent", cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
-	private Set<Booking> bookings=new HashSet<Booking>();
+	private Set<Booking> bookings = new HashSet<Booking>();
 	
-	@OneToMany(mappedBy = "author", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
-	private Set<Review> reviews=new HashSet<Review>();
+	private Set<Review> reviews = new HashSet<Review>();
 	
-	@OneToMany(mappedBy = "agent",cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
-	private Set<Messages> messages=new HashSet<Messages>();
+	private Set<Message> messages = new HashSet<Message>();
 }
