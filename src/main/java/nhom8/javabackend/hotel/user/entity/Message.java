@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.booking.entity;
+package nhom8.javabackend.hotel.user.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -13,7 +13,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
-import nhom8.javabackend.hotel.user.entity.User;
 
 @Data
 @Builder
@@ -22,8 +21,8 @@ import nhom8.javabackend.hotel.user.entity.User;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "messages")
-public class Messages extends BaseEntity{
+@Table(name = "message")
+public class Message extends BaseEntity{
 	
 	@NotNull
 	private String senderEmail;

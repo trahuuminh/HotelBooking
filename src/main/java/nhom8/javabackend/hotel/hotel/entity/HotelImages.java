@@ -21,7 +21,7 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "hotel_images")
+@Table(name = "hotel_image")
 public class HotelImages extends BaseEntity {
 	
 	@NotNull
