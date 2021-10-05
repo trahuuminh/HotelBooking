@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -15,7 +16,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
+import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.user.entity.User;
+import nhom8.javabackend.hotel.user.entity.UserImage;
 
 
 @Data
@@ -49,4 +52,8 @@ public class Booking extends BaseEntity{
 	@ManyToOne
 	@JoinColumn(name = "agent_id")
 	private User agent;
+	
+	@OneToOne
+	@JoinColumn(name = "hotel_id")
+	private Hotel hotel;
 }
