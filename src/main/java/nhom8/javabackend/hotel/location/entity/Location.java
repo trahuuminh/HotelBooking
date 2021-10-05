@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.hotel.entity;
+package nhom8.javabackend.hotel.location.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,7 +18,7 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "hotel_location")
+@Table(name = "location")
 public class Location extends BaseEntity {
 	
 	private int lat;

@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.booking.entity;
+package nhom8.javabackend.hotel.review.entity;
 
 import java.time.LocalDateTime;
 
