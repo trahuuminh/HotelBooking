@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import nhom8.javabackend.hotel.user.dto.CreateUserDto;
-import nhom8.javabackend.hotel.user.dto.UpdateUserDto;
-import nhom8.javabackend.hotel.user.dto.UserDto;
+import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
+import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
+import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 import nhom8.javabackend.hotel.user.service.itf.UserService;

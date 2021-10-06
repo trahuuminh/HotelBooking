@@ -28,6 +28,7 @@ import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.review.entity.Review;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @Data
 @Builder
@@ -39,7 +40,7 @@ import nhom8.javabackend.hotel.review.entity.Review;
 @Table(name = "users")
 public class User extends BaseEntity {
 	@NotNull
-	private String role;
+	private Role role;
 	
 	private String firstName;
 	
