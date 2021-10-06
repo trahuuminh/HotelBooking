@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.user.dto;
+package nhom8.javabackend.hotel.user.dto.user;
 
 import java.util.Set;
 

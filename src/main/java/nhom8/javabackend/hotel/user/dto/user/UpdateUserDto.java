@@ -1,10 +1,11 @@
-package nhom8.javabackend.hotel.user.dto;
+package nhom8.javabackend.hotel.user.dto.user;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @Data
 public class UpdateUserDto {
@@ -12,7 +13,7 @@ public class UpdateUserDto {
 	private Long id;
 	
 	@NotBlank
-	private String role;
+	private Role role;
 	
 	private String firstName;
 	

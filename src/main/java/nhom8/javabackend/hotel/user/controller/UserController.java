@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.user.dto.CreateUserDto;
-import nhom8.javabackend.hotel.user.dto.UpdateUserDto;
-import nhom8.javabackend.hotel.user.dto.UserDto;
+import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
+import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
+import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
 
