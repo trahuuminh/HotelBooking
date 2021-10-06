@@ -18,7 +18,6 @@ import lombok.ToString;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.user.entity.User;
-import nhom8.javabackend.hotel.user.entity.UserImage;
 
 
 @Data
