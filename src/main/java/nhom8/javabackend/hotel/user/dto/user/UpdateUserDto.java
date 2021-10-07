@@ -12,7 +12,6 @@ public class UpdateUserDto {
 	@NotNull
 	private Long id;
 	
-	@NotBlank
 	private Role role;
 	
 	private String firstName;
