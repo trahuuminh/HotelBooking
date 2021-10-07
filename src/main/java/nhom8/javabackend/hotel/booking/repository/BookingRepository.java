@@ -13,6 +13,7 @@ import nhom8.javabackend.hotel.booking.entity.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long>{
+	
 	@Transactional(readOnly = true)
 	@Query("SELECT b FROM Booking b")
 	List<BookingDto> findAllDto();
