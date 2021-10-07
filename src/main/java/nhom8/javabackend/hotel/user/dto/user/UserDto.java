@@ -4,6 +4,7 @@ import java.util.Set;
 
 import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.user.entity.Message;
 import nhom8.javabackend.hotel.user.entity.UserImage;
 
 public interface UserDto {
@@ -49,4 +50,5 @@ public interface UserDto {
 	
 	public Set<Hotel> getFavouritePost();
 	
+	public Set<Message> getMessages();
 }

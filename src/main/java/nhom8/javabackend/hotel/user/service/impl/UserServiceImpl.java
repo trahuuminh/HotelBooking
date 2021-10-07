@@ -10,6 +10,7 @@ import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
 	public User createUser(CreateUserDto dto) {
 		User user=new User();
 		
-		user.setRole(dto.getRole());
+		user.setRole(Role.USER);
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setUsername(dto.getUsername());
