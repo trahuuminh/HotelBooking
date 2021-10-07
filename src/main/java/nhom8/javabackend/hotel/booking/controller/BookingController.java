@@ -33,8 +33,8 @@ public class BookingController {
 
 	@GetMapping
 	public Object findAllBooking() {
-		List<BookingDto> users = service.findAllDto();
-		return ResponseHandler.getResponse(users, HttpStatus.OK);
+		List<BookingDto> books = service.findAllDto();
+		return ResponseHandler.getResponse(books, HttpStatus.OK);
 
 	}
 
