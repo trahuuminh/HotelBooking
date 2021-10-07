@@ -24,6 +24,7 @@ import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.user.dto.userimage.CreateUserImageDto;
 import nhom8.javabackend.hotel.user.dto.userimage.UpdateUserImageDto;
 import nhom8.javabackend.hotel.user.dto.userimage.UserImageDto;
+import nhom8.javabackend.hotel.user.dto.userimage.UserImageUploadDto;
 import nhom8.javabackend.hotel.user.entity.UserImage;
 import nhom8.javabackend.hotel.user.service.itf.UserImageService;
 
@@ -87,8 +88,11 @@ public class UserImageController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
+			UserImageUploadDto dto= new UserImageUploadDto();
+			dto.setName(fileName);
+			dto.setUrl(uploadDir+fileName);
 			
-			return ResponseHandler.getResponse(fileName, HttpStatus.OK);
+			return ResponseHandler.getResponse(dto, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
