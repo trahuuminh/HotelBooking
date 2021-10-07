@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.user.controller;
+package nhom8.javabackend.hotel.hotel.controller;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,52 +21,54 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.user.dto.userimage.CreateUserImageDto;
-import nhom8.javabackend.hotel.user.dto.userimage.UpdateUserImageDto;
-import nhom8.javabackend.hotel.user.dto.userimage.UserImageDto;
-import nhom8.javabackend.hotel.user.entity.UserImage;
-import nhom8.javabackend.hotel.user.service.itf.UserImageService;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
+import nhom8.javabackend.hotel.hotel.entity.HotelImages;
+import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
 
 @RestController
-@RequestMapping("/api/user-image")
-public class UserImageController {
-	private final String uploadDir="/src/main/resources/static/user-images/";
+@RequestMapping("/api/hotel-images")
+public class HotelImagesController {
+
+	private final String uploadDir="/src/main/resources/static/hotel-images/";
 	
-	private UserImageService service;
+	private HotelImagesService service;
 	
-	public UserImageController(UserImageService userImageService) {
-		service=userImageService;
+	public HotelImagesController(HotelImagesService hotelImagesService) {
+		service=hotelImagesService;
 	}
 	
-	@GetMapping("/find-all-user-image")
-	public Object findAllUserImage() {
-		List<UserImageDto> userImages=service.findAllUserImageDto();
-		return ResponseHandler.getResponse(userImages,HttpStatus.OK);
-	}
-	
-	@PostMapping("/update-user-image")
-	public Object createNewUserImage(@Valid @RequestBody CreateUserImageDto dto,BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+	@GetMapping("/find-all-hotel-images")
+	public Object findAllHotelImages() {
+		List<HotelImagesDto>hotelImagesList=service.findAllHotelImagesDto();
 		
-		UserImage userImage=service.createNewUserImage(dto);
-		
-		return ResponseHandler.getResponse(userImage,HttpStatus.CREATED);
+		return ResponseHandler.getResponse(hotelImagesList,HttpStatus.OK);
 	}
 	
-	@PutMapping("/update-user-image")
-	public Object updateUserImage(@Valid @RequestBody UpdateUserImageDto dto, BindingResult errors) {
+	@PostMapping("/create-hotel-images")
+	public Object createNewHotelImages(@Valid @RequestBody CreateHotelImagesDto dto, BindingResult errors) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		UserImage userImage=service.updateUserImage(dto);
+		HotelImages hotelImages=service.createNewHotelImages(dto);
 		
-		return ResponseHandler.getResponse(userImage,HttpStatus.OK);
+		return ResponseHandler.getResponse(hotelImages,HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("/delete/{userimage-id}")
-	public Object deleteUserImage(@PathVariable("userimage-id")Long id) {
-		service.deleteUserImage(id);
+	@PutMapping("/update-hotel-images")
+	public Object updateHotelImages(@Valid @RequestBody UpdateHotelImagesDto dto,BindingResult errors) {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+		
+		HotelImages hotelImages=service.updateHotelImages(dto);
+		
+		return ResponseHandler.getResponse(hotelImages,HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete/{hotel-images-id}")
+	public Object deleteHotelImages(@PathVariable("hotel-images-id")Long id) {
+		service.deleteHotelImages(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}
