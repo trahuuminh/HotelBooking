@@ -4,13 +4,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
-import nhom8.javabackend.hotel.user.util.Role;
 
 @Data
 public class CreateUserDto {
 	
-	@NotBlank
-	private Role role;
 	
 	private String firstName;
 	

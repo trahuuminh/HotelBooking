@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 public class Message extends BaseEntity{
 	
 	@NotNull
+	@Email
 	private String senderEmail;
 	
 	@NotNull
