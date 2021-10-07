@@ -8,13 +8,13 @@ public interface AmenitiesDto {
 	
 	public int getBedRoom();
 	
-	public boolean getWifiAvailability();
+	public String getWifiAvailability();
 	
-	public boolean getParkingAvailability();
+	public String getParkingAvailability();
 	
-	public boolean getPoolAvailability();
+	public String getPoolAvailability();
 	
-	public boolean getAirCondition();
+	public String getAirCondition();
 	
-	public boolean getExtraBedFacility();
+	public String getExtraBedFacility();
 }
