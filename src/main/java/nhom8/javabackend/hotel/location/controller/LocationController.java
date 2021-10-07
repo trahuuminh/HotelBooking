@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import nhom8.javabackend.hotel.booking.dto.BookingDto;
-import nhom8.javabackend.hotel.booking.dto.CreateBookingDto;
-import nhom8.javabackend.hotel.booking.dto.UpdateBookingDto;
-import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
+import nhom8.javabackend.hotel.location.dto.CreateLocationDto;
+import nhom8.javabackend.hotel.location.dto.LocationDto;
+import nhom8.javabackend.hotel.location.dto.UpdateLocationDto;
+import nhom8.javabackend.hotel.location.entity.Location;
 import nhom8.javabackend.hotel.location.service.itf.LocationService;
 
 @RestController
@@ -27,14 +27,14 @@ import nhom8.javabackend.hotel.location.service.itf.LocationService;
 public class LocationController {
 	private LocationService service;
 	
-	public LocationController(LocationService locationservice) {
-		service = locationservice;
+	public LocationController(LocationService locationService) {
+		service = locationService;
 	}
 	
 	@GetMapping
 	public Object findAllLocation() {
-		List<LocationDto> users = service.findAllDto();
-		return ResponseHandler.getResponse(users, HttpStatus.OK);
+		List<LocationDto> locations = service.findAllDto();
+		return ResponseHandler.getResponse(locations, HttpStatus.OK);
 
 	}
 
@@ -43,7 +43,7 @@ public class LocationController {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 
-		Booking addedLocation = service.addNewLocation(dto);
+		Location addedLocation = service.addNewLocation(dto);
 
 		return ResponseHandler.getResponse(addedLocation, HttpStatus.CREATED);
 	}
@@ -53,12 +53,12 @@ public class LocationController {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 
-		Booking updateLocation = service.updateLocation(dto);
+		Location updateLocation = service.updateLocation(dto);
 
 		return ResponseHandler.getResponse(updateLocation, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-location//{location-id}")
+	@DeleteMapping("/delete-location/{location-id}")
 	public Object deleteLocation(@PathVariable("location-id") Long locationId) {
 		service.deleteById(locationId);
 
