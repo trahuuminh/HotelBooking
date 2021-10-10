@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -40,6 +42,7 @@ import nhom8.javabackend.hotel.user.util.Role;
 @Table(name = "users")
 public class User extends BaseEntity {
 	@NotNull
+	@Enumerated(EnumType.STRING)
 	private Role role;
 	
 	private String firstName;
