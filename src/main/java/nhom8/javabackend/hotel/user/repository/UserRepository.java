@@ -10,6 +10,10 @@ import nhom8.javabackend.hotel.user.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	
+	User getByUsername(String username);
+	
 	@Query("SELECT u FROM User u")
 	List<UserDto> findAllUserDto();
+
+	
 }

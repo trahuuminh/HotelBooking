@@ -2,6 +2,7 @@ package nhom8.javabackend.hotel.user.service.impl;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
@@ -16,9 +17,11 @@ import nhom8.javabackend.hotel.user.util.Role;
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepo;
+	private PasswordEncoder encode;
 	
-	public UserServiceImpl(UserRepository userRepository) {
+	public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
 		userRepo=userRepository;
+		encode=encoder;
 	}
 	
 	@Override
@@ -34,7 +37,7 @@ public class UserServiceImpl implements UserService {
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setUsername(dto.getUsername());
-		user.setPassword(dto.getPassword());
+		user.setPassword(encode.encode(dto.getPassword()));
 		user.setEmail(dto.getEmail());
 		user.setCellNumber(dto.getCellNumber());
 		user.setDateOfBirth(dto.getDateOfBirth());
