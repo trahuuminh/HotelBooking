@@ -9,7 +9,9 @@ import nhom8.javabackend.hotel.hotel.util.Status;
 @Getter
 @Setter
 public class CreateHotelDto {
-
+	@NotNull
+	private Long agentId;
+	
 	private String title;
 
 	private String slug;
@@ -23,8 +25,6 @@ public class CreateHotelDto {
 	private String price;
 
 	private boolean isNegotiable;
-
-	private String propertyType;
 
 	private String condition;
 

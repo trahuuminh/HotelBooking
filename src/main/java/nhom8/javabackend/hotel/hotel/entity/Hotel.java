@@ -70,7 +70,9 @@ public class Hotel extends BaseEntity {
 	
 	private String termsAndCondition;
 	
-	@ManyToOne
+	
+	@JsonIgnore
+	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JoinColumn(name = "agent_id")
 	private User agent;
 	

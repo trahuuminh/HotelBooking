@@ -33,7 +33,7 @@ public class HotelController {
 	}
 
 	@GetMapping
-	public Object findAllLocation() {
+	public Object findAllHotels() {
 		List<HotelDto> hotels = service.findAllDto();
 		return ResponseHandler.getResponse(hotels, HttpStatus.OK);
 
