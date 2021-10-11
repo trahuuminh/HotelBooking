@@ -27,8 +27,6 @@ public class UpdateHotelDto {
 
 	private boolean isNegotiable;
 
-	private String propertyType;
-
 	private String condition;
 
 	@NotNull

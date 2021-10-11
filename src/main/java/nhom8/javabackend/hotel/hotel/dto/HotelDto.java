@@ -24,8 +24,6 @@ public interface HotelDto {
 
 	public String getIsNegotiable();
 
-	public String getPropertyType();
-
 	public String getCondition();
 
 	public int getRating();
