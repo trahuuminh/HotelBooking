@@ -75,4 +75,9 @@ public class HotelServiceImpl implements HotelService {
 	public void deleteById(Long hotelId) {
 		repository.deleteById(hotelId);
 	}
+
+	@Override
+	public boolean isExistedId(Long hotelId) {
+		return repository.existsById(hotelId);
+	}
 }

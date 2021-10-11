@@ -33,14 +33,14 @@ public class HotelController {
 	}
 
 	@GetMapping
-	public Object findAllLocation() {
+	public Object findAllHotel() {
 		List<HotelDto> hotels = service.findAllDto();
 		return ResponseHandler.getResponse(hotels, HttpStatus.OK);
 
 	}
 
 	@PostMapping("/add-hotel")
-	public Object addHotel(@Valid @RequestBody CreateHotelDto dto, BindingResult errors) {
+	public Object addHotel(@RequestBody CreateHotelDto dto, BindingResult errors) {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 

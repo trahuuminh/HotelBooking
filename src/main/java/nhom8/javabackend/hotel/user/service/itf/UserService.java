@@ -2,6 +2,9 @@ package nhom8.javabackend.hotel.user.service.itf;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
@@ -15,4 +18,10 @@ public interface UserService {
 	User updateUser(UpdateUserDto dto);
 	
 	void deleteUser(Long id);
+
+	boolean isExistedId(Long userId);
+
+	User addHotel(AddHotelDto dto);
+
+	User removeHotel(@Valid AddHotelDto dto);
 }
