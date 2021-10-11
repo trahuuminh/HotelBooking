@@ -2,9 +2,15 @@ package nhom8.javabackend.hotel.user.service.impl;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
+import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
@@ -17,11 +23,12 @@ import nhom8.javabackend.hotel.user.util.Role;
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepo;
+	private HotelRepository hotelRepo;
 	private PasswordEncoder encode;
-	
-	public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
+	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder) {
 		userRepo=userRepository;
-		encode=encoder;
+		hotelRepo=hotelRepository;
+    encode=encoder;
 	}
 	
 	@Override
@@ -83,6 +90,30 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public boolean isExistedId(Long userId) {
+		return userRepo.existsById(userId);
+	}
+
+	@Override
+	public User addHotel(AddHotelDto dto) {
+		User user = userRepo.getById(dto.getUserId());
+		Hotel hotel = hotelRepo.getById(dto.getHotelId());
+		
+		user.addHotel(hotel);
+		
+		return userRepo.save(user);
+	}
+
+	@Override
+	public User removeHotel(@Valid AddHotelDto dto) {
+		User user = userRepo.getById(dto.getUserId()); 
+		Hotel hotel = hotelRepo.getById(dto.getHotelId());
+		
+		user.removeHotel(hotel);
+		
+		return userRepo.save(user);
+	}
+	
 	public User getUserDetails(Long id) {
 		if(userRepo.countById(id)==0)
 			return null;

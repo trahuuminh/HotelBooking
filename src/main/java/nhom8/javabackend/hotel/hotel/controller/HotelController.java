@@ -40,7 +40,7 @@ public class HotelController {
 	}
 
 	@PostMapping("/add-hotel")
-	public Object addHotel(@Valid @RequestBody CreateHotelDto dto, BindingResult errors) {
+	public Object addHotel(@RequestBody CreateHotelDto dto, BindingResult errors) {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 

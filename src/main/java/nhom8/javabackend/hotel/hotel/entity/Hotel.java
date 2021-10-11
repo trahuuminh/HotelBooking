@@ -55,8 +55,6 @@ public class Hotel extends BaseEntity {
 	
 	private boolean isNegotiable;
 	
-	private String propertyType;
-	
 	private String condition;
 	
 	@NotNull
