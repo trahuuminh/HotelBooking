@@ -15,4 +15,5 @@ public interface MessageService {
 	Message updateMessage(UpdateMessageDto dto);
 	
 	void deleteMessage(Long id);
+	
 }

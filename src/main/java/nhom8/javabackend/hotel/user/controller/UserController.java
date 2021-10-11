@@ -36,7 +36,7 @@ public class UserController {
 	
 	@GetMapping("/find-all-user")
 	public Object findAllUser() {
-		List<UserDto> users=service.findAllUserDto();
+		List<UserDto> users=service.findAllUser();
 		return ResponseHandler.getResponse(users,HttpStatus.OK);
 	}
 	
@@ -87,5 +87,11 @@ public class UserController {
 		User updateUser = service.removeHotel(dto);
 		
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
+  }
+	@GetMapping("/get-user-details/{user-id}")
+	public Object getUserDetails(@PathVariable("user-id") Long id) {
+		User user=service.getUserDetails(id);
+		
+		return ResponseHandler.getResponse(user,HttpStatus.OK);
 	}
 }

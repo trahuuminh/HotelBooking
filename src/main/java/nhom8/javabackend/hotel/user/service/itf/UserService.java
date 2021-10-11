@@ -11,11 +11,13 @@ import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
 
 public interface UserService {
-	List<UserDto> findAllUserDto();
+	List<UserDto> findAllUser();
 	
 	User createUser(CreateUserDto dto);
 	
 	User updateUser(UpdateUserDto dto);
+	
+	User getUserDetails(Long id);
 	
 	void deleteUser(Long id);
 

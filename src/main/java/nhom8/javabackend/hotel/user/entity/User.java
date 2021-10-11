@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,6 +19,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,12 +37,14 @@ import nhom8.javabackend.hotel.user.util.Role;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"favouritePost"})
-@EqualsAndHashCode(exclude = {"favouritePost"},callSuper = false)
+@ToString(exclude = {"favouritePost", "listedPost"})
+@EqualsAndHashCode(exclude = {"favouritePost", "listedPost"},callSuper = false)
 @Entity
 @Table(name = "users")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","listedPost"})
 public class User extends BaseEntity {
 	@NotNull
+	@Enumerated(EnumType.STRING)
 	private Role role;
 	
 	private String firstName;

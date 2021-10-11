@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,15 +24,16 @@ public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepo;
 	private HotelRepository hotelRepo;
-	
-	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository) {
+	private PasswordEncoder encode;
+	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder) {
 		userRepo=userRepository;
 		hotelRepo=hotelRepository;
+    encode=encoder;
 	}
 	
 	@Override
-	public List<UserDto> findAllUserDto() {
-		return userRepo.findAllUserDto();
+	public List<UserDto> findAllUser() {
+		return userRepo.findAllUser();
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setUsername(dto.getUsername());
-		user.setPassword(dto.getPassword());
+		user.setPassword(encode.encode(dto.getPassword()));
 		user.setEmail(dto.getEmail());
 		user.setCellNumber(dto.getCellNumber());
 		user.setDateOfBirth(dto.getDateOfBirth());
@@ -112,6 +114,12 @@ public class UserServiceImpl implements UserService {
 		return userRepo.save(user);
 	}
 	
+	public User getUserDetails(Long id) {
+		if(userRepo.countById(id)==0)
+			return null;
+		
+		return userRepo.getUserById(id);
+	}
 	
 	
 }
