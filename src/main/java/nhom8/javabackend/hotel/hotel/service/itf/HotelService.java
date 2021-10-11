@@ -19,4 +19,6 @@ public interface HotelService {
 
 	void deleteById(Long hotelId);
 
+	boolean isExistedId(Long hotelId);
+
 }

@@ -40,7 +40,6 @@ public class HotelServiceImpl implements HotelService {
 		newHotel.setStatus(dto.getStatus());
 		newHotel.setPrice(dto.getPrice());
 		newHotel.setNegotiable(dto.isNegotiable());
-		newHotel.setPropertyType(dto.getPropertyType());
 		newHotel.setCondition(dto.getCondition());
 		newHotel.setRating(dto.getRating());
 		newHotel.setRatingCount(dto.getRatingCount());
@@ -61,7 +60,6 @@ public class HotelServiceImpl implements HotelService {
 		updateHotel.setStatus(dto.getStatus());
 		updateHotel.setPrice(dto.getPrice());
 		updateHotel.setNegotiable(dto.isNegotiable());
-		updateHotel.setPropertyType(dto.getPropertyType());
 		updateHotel.setCondition(dto.getCondition());
 		updateHotel.setRating(dto.getRating());
 		updateHotel.setRatingCount(dto.getRatingCount());
@@ -74,5 +72,10 @@ public class HotelServiceImpl implements HotelService {
 	@Override
 	public void deleteById(Long hotelId) {
 		repository.deleteById(hotelId);
+	}
+
+	@Override
+	public boolean isExistedId(Long hotelId) {
+		return repository.existsById(hotelId);
 	}
 }

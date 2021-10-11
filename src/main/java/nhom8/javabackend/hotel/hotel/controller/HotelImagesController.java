@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesUploadDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
@@ -89,8 +90,11 @@ public class HotelImagesController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
+			HotelImagesUploadDto dto=new HotelImagesUploadDto();
+			dto.setUrl(uploadDir + fileName);
+			dto.setName(fileName);
 			
-			return ResponseHandler.getResponse(fileName, HttpStatus.OK);
+			return ResponseHandler.getResponse(dto, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
