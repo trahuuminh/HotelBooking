@@ -34,7 +34,7 @@ public class UserController {
 	
 	@GetMapping("/find-all-user")
 	public Object findAllUser() {
-		List<UserDto> users=service.findAllUserDto();
+		List<UserDto> users=service.findAllUser();
 		return ResponseHandler.getResponse(users,HttpStatus.OK);
 	}
 	
@@ -63,5 +63,12 @@ public class UserController {
 		service.deleteUser(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);
+	}
+	
+	@GetMapping("/get-user-details/{user-id}")
+	public Object getUserDetails(@PathVariable("user-id") Long id) {
+		User user=service.getUserDetails(id);
+		
+		return ResponseHandler.getResponse(user,HttpStatus.OK);
 	}
 }

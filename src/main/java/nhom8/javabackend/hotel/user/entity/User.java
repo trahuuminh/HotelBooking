@@ -19,6 +19,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,7 @@ import nhom8.javabackend.hotel.user.util.Role;
 @EqualsAndHashCode(exclude = {"favouritePost"},callSuper = false)
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","listedPost"})
 public class User extends BaseEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -96,7 +98,7 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();

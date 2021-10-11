@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<UserDto> findAllUserDto() {
-		return userRepo.findAllUserDto();
+	public List<UserDto> findAllUser() {
+		return userRepo.findAllUser();
 	}
 
 	@Override
@@ -80,6 +80,14 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(Long id) {
 		userRepo.deleteById(id);
 		
+	}
+
+	@Override
+	public User getUserDetails(Long id) {
+		if(userRepo.countById(id)==0)
+			return null;
+		
+		return userRepo.getUserById(id);
 	}
 	
 	
