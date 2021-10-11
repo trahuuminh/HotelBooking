@@ -4,11 +4,12 @@ import java.util.Set;
 
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.user.entity.UserImage;
+import nhom8.javabackend.hotel.user.util.Role;
 
 public interface UserDto {
 	public Long getId();
 	
-	public String getRole();
+	public Role getRole();
 	
 	public String getFirstName();
 	
