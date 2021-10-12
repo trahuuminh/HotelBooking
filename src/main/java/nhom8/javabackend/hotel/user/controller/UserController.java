@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
+import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
@@ -65,6 +67,27 @@ public class UserController {
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}
 	
+	@PostMapping("/add-hotel")
+	public Object addHotel(@Valid @RequestBody AddHotelDto dto, BindingResult errors) {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST); 
+		
+		User updateUser = service.addHotel(dto);
+
+		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
+	}
+	
+	
+	@PostMapping("/remove-hotel")
+	public Object removeHotel(@Valid @RequestBody AddHotelDto dto,
+			BindingResult errors) {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+		
+		User updateUser = service.removeHotel(dto);
+		
+		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
+  }
 	@GetMapping("/get-user-details/{user-id}")
 	public Object getUserDetails(@PathVariable("user-id") Long id) {
 		User user=service.getUserDetails(id);

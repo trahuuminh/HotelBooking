@@ -34,8 +34,8 @@ import nhom8.javabackend.hotel.user.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"usersFavourite"})
-@EqualsAndHashCode(exclude = {"usersFavourite"}, callSuper = false)
+@ToString(exclude = {"usersFavourite", "agent"})
+@EqualsAndHashCode(exclude = {"usersFavourite", "agent"}, callSuper = false)
 @Entity
 @Table(name = "hotel")
 public class Hotel extends BaseEntity {
@@ -55,8 +55,6 @@ public class Hotel extends BaseEntity {
 	
 	private boolean isNegotiable;
 	
-	private String propertyType;
-	
 	private String condition;
 	
 	@NotNull
@@ -73,7 +71,7 @@ public class Hotel extends BaseEntity {
 	
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "agent_id")
+	@JoinColumn(name = "agent_id", referencedColumnName = "id")
 	private User agent;
 	
 	@OneToOne

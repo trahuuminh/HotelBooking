@@ -37,11 +37,11 @@ import nhom8.javabackend.hotel.user.util.Role;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"favouritePost"})
-@EqualsAndHashCode(exclude = {"favouritePost"},callSuper = false)
+@ToString(exclude = {"favouritePost", "listedPost"})
+@EqualsAndHashCode(exclude = {"favouritePost", "listedPost"},callSuper = false)
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","listedPost"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","listedPost"})
 public class User extends BaseEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -98,7 +98,7 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
@@ -117,4 +117,16 @@ public class User extends BaseEntity {
 	@JsonIgnore
 	@Builder.Default
 	private Set<Message> messages = new HashSet<Message>();
+	
+	public void addHotel(Hotel hotel) {
+		this.favouritePost.add(hotel);
+		hotel.getUsersFavourite().add(this);
+		
+	}
+	
+	public void removeHotel(Hotel hotel) {
+		this.favouritePost.remove(hotel);
+		hotel.getUsersFavourite().remove(this);
+		
+	}
 }
