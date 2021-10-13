@@ -1,9 +1,15 @@
 package nhom8.javabackend.hotel.user.controller;
 
-import java.util.List;
+
+
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
@@ -35,9 +41,10 @@ public class UserController {
 	}
 	
 	@GetMapping("/find-all-user")
-	public Object findAllUser() {
-		List<UserDto> users=service.findAllUser();
-		return ResponseHandler.getResponse(users,HttpStatus.OK);
+	public Object findAllUser(@RequestParam("p")Optional<Integer>p) {
+		Pageable pageable=PageRequest.of(p.orElse(0),5,Sort.by("id"));
+		Page<UserDto> users=service.findAllUser(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(users),HttpStatus.OK);
 	}
 	
 	@PostMapping("/create-user")
@@ -45,9 +52,9 @@ public class UserController {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		User user=service.createUser(dto);
+		service.createUser(dto);
 		
-		return ResponseHandler.getResponse(user,HttpStatus.CREATED);
+		return ResponseHandler.getResponse(HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update-user")
@@ -62,6 +69,9 @@ public class UserController {
 	
 	@DeleteMapping("/delete/{user-id}")
 	public Object deleteUser(@PathVariable("user-id")Long id) {
+		if(!service.isExistedId(id))
+			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+		
 		service.deleteUser(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);
@@ -90,7 +100,10 @@ public class UserController {
   }
 	@GetMapping("/get-user-details/{user-id}")
 	public Object getUserDetails(@PathVariable("user-id") Long id) {
-		User user=service.getUserDetails(id);
+		if(!service.isExistedId(id))
+			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+		
+		UserDto user=service.getUserDetails(id);
 		
 		return ResponseHandler.getResponse(user,HttpStatus.OK);
 	}

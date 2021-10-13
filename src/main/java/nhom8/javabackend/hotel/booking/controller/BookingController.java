@@ -1,9 +1,13 @@
 package nhom8.javabackend.hotel.booking.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.booking.dto.BookingDto;
@@ -32,9 +37,10 @@ public class BookingController {
 	}
 
 	@GetMapping
-	public Object findAllBooking() {
-		List<BookingDto> books = service.findAllDto();
-		return ResponseHandler.getResponse(books, HttpStatus.OK);
+	public Object findAllBooking(@RequestParam("p") Optional<Integer> p) {
+		Pageable pageable=PageRequest.of(p.orElse(0), 5,Sort.by("id"));
+		Page<BookingDto> bookings = service.findAllBooking(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(bookings), HttpStatus.OK);
 
 	}
 
@@ -60,6 +66,9 @@ public class BookingController {
 
 	@DeleteMapping("/delete-booking//{booking-id}")
 	public Object deleteBooking(@PathVariable("booking-id") Long bookingId) {
+		if(!service.isExistedId(bookingId))
+			return ResponseHandler.getResponse("Booking doesn't exist",HttpStatus.BAD_REQUEST);
+		
 		service.deleteById(bookingId);
 
 		return ResponseHandler.getResponse(HttpStatus.OK);

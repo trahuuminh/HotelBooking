@@ -63,4 +63,9 @@ public class MessageServiceImpl implements MessageService{
 		messageRepo.deleteById(id);
 	}
 
+	@Override
+	public boolean isExistedId(Long id) {
+		return messageRepo.existsById(id);
+	}
+
 }

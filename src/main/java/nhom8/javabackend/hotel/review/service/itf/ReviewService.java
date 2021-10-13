@@ -1,19 +1,25 @@
 package nhom8.javabackend.hotel.review.service.itf;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import nhom8.javabackend.hotel.review.dto.CreateReviewDto;
+import nhom8.javabackend.hotel.review.dto.PagingFormatReviewDto;
 import nhom8.javabackend.hotel.review.dto.ReviewDto;
 import nhom8.javabackend.hotel.review.dto.UpdateReviewDto;
 import nhom8.javabackend.hotel.review.entity.Review;
 
 public interface ReviewService {
 	
-	List<ReviewDto> findAllReviewDto();
+	Page<ReviewDto> findAllReviewDto(Pageable pageable);
+	
+	PagingFormatReviewDto pagingFormat(Page<ReviewDto> page);
 	
 	Review createNewReview(CreateReviewDto dto);
 	
 	Review updateReview(UpdateReviewDto dto);
 	
 	void deleteReview(Long id);
+	
+	boolean isExistedId(Long id);
 }

@@ -5,11 +5,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.hotel.validation.annotation.ExitsUserId;
 import nhom8.javabackend.hotel.user.util.Role;
 
 @Data
 public class UpdateUserDto {
 	@NotNull
+	@ExitsUserId
 	private Long id;
 	
 	private Role role;

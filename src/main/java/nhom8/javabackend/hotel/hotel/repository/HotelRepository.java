@@ -1,7 +1,8 @@
 package nhom8.javabackend.hotel.hotel.repository;
 
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>{
 
 	@Transactional(readOnly = true)
 	@Query("SELECT h FROM Hotel h")
-	List<HotelDto> findAllDto();
+	Page<HotelDto> findAllDto(Pageable pageable);
 
 }

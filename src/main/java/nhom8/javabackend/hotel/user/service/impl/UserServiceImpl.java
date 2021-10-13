@@ -1,17 +1,18 @@
 package nhom8.javabackend.hotel.user.service.impl;
 
-import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
+import nhom8.javabackend.hotel.user.dto.user.PagingFormatUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
@@ -25,15 +26,16 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
 	private HotelRepository hotelRepo;
 	private PasswordEncoder encode;
+
 	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder) {
 		userRepo=userRepository;
 		hotelRepo=hotelRepository;
-    encode=encoder;
+		encode=encoder;
 	}
 	
 	@Override
-	public List<UserDto> findAllUser() {
-		return userRepo.findAllUser();
+	public Page<UserDto> findAllUser(Pageable pageable) {
+		return userRepo.findAllUser(pageable);
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean isExistedId(Long userId) {
-		return userRepo.existsById(userId);
+		return userRepo.existsById(userId);	
 	}
 
 	@Override
@@ -114,11 +116,24 @@ public class UserServiceImpl implements UserService {
 		return userRepo.save(user);
 	}
 	
-	public User getUserDetails(Long id) {
+	@Override
+	public UserDto getUserDetails(Long id) {
 		if(userRepo.countById(id)==0)
 			return null;
 		
 		return userRepo.getUserById(id);
+	}
+
+	@Override
+	public PagingFormatUserDto pagingFormat(Page<UserDto> page) {
+		PagingFormatUserDto dto=new PagingFormatUserDto();
+		
+		dto.setPageSize(page.getSize());
+		dto.setTotalRecordCount(page.getTotalElements());
+		dto.setPageNumber(page.getNumber());
+		dto.setRecords(page.toList());
+		
+		return dto;
 	}
 	
 	

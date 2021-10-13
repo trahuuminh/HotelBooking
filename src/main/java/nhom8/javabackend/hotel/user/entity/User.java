@@ -19,7 +19,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,6 +54,7 @@ public class User extends BaseEntity {
 	private String username;
 	
 	@NotNull
+	@JsonIgnore
 	private String password;
 	
 	@NotNull
@@ -103,7 +103,7 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
 	
-	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Booking> bookings = new HashSet<Booking>();

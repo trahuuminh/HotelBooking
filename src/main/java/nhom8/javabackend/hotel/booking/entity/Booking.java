@@ -49,8 +49,8 @@ public class Booking extends BaseEntity{
 	private LocalDateTime endDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "agent_id")
-	private User agent;
+	@JoinColumn(name = "customer_id")
+	private User customer;
 	
 	@OneToOne
 	@JoinColumn(name = "hotel_id")

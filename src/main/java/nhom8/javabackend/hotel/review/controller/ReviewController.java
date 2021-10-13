@@ -1,9 +1,13 @@
 package nhom8.javabackend.hotel.review.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
@@ -33,10 +38,11 @@ public class ReviewController {
 	}
 	
 	@GetMapping("/find-all-review")
-	public Object findAllReview() {
-		List<ReviewDto> reviews=service.findAllReviewDto();
+	public Object findAllReview(@RequestParam("p") Optional<Integer>p) {
+		Pageable pageable=PageRequest.of(p.orElse(0), 5,Sort.by("id"));
+		Page<ReviewDto> reviews=service.findAllReviewDto(pageable);
 		
-		return ResponseHandler.getResponse(reviews,HttpStatus.OK);
+		return ResponseHandler.getResponse(service.pagingFormat(reviews),HttpStatus.OK);
 	}
 	
 	@PostMapping("/create-new-review")
@@ -61,6 +67,9 @@ public class ReviewController {
 	
 	@DeleteMapping("/delete/{review-id}")
 	public Object deleteReview(@PathVariable("review-id") Long id) {
+		if(!service.isExistedId(id))
+			return ResponseHandler.getResponse("Review doesn't exist",HttpStatus.BAD_REQUEST);
+		
 		service.deleteReview(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);

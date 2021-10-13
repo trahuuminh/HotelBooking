@@ -8,12 +8,14 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nhom8.javabackend.hotel.booking.validation.annotation.ExistBookingId;
 
 @Getter
 @Setter
 public class UpdateBookingDto {
 	
 	@NotNull
+	@ExistBookingId
 	private Long id;
 	
 	@NotBlank

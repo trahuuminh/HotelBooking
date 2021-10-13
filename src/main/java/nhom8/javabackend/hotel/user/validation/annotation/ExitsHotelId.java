@@ -15,7 +15,7 @@ import nhom8.javabackend.hotel.user.validation.validator.ExitsHotelIdValidator;
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface ExitsHotelId {
-	public String message() default "Hotel doesn't exits";
+	public String message() default "Hotel doesn't exist";
 	
 	Class<?>[] groups() default { };
 
