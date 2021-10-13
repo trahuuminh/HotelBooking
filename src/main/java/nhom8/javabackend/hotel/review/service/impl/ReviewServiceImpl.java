@@ -1,35 +1,49 @@
 package nhom8.javabackend.hotel.review.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.review.dto.CreateReviewDto;
+import nhom8.javabackend.hotel.review.dto.PagingFormatReviewDto;
 import nhom8.javabackend.hotel.review.dto.ReviewDto;
 import nhom8.javabackend.hotel.review.dto.UpdateReviewDto;
 import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.review.service.itf.ReviewService;
+import nhom8.javabackend.hotel.user.entity.User;
+import nhom8.javabackend.hotel.user.repository.UserRepository;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
 
 	private ReviewRepository reviewRepo;
+	private UserRepository userRepo;
+	private HotelRepository hotelRepo;
 	
-	public ReviewServiceImpl(ReviewRepository reviewRepository) {
+	public ReviewServiceImpl(ReviewRepository reviewRepository,UserRepository userRepository,HotelRepository hotelRepository) {
 		reviewRepo=reviewRepository;
+		userRepo=userRepository;
+		hotelRepo=hotelRepository;
 	}
 	
 	@Override
-	public List<ReviewDto> findAllReviewDto() {
-		return reviewRepo.findAllReviewDto();
+	public Page<ReviewDto> findAllReviewDto(Pageable pageable) {
+		return reviewRepo.findAllReviewDto(pageable);
 	}
 
 	@Override
 	public Review createNewReview(CreateReviewDto dto) {
 		Review review =new Review();
+		User author=userRepo.getById(dto.getAuthorId());
+		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		
+		review.setAuthor(author);
+		review.setHotel(hotel);
 		review.setTitle(dto.getTitle());
 		review.setText(dto.getText());
 		review.setReviewDate(LocalDateTime.now());
@@ -60,6 +74,24 @@ public class ReviewServiceImpl implements ReviewService{
 	public void deleteReview(Long id) {
 		reviewRepo.deleteById(id);
 	}
+
+	@Override
+	public boolean isExistedId(Long id) {
+		return reviewRepo.existsById(id);
+	}
+
+	@Override
+	public PagingFormatReviewDto pagingFormat(Page<ReviewDto> page) {
+		PagingFormatReviewDto dto=new PagingFormatReviewDto();
+		
+		dto.setPageSize(page.getSize());
+		dto.setTotalRecordCount(page.getTotalElements());
+		dto.setPageNumber(page.getNumber());
+		dto.setRecords(page.toList());
+		
+		return dto;
+	}
+	
 	
 	
 }

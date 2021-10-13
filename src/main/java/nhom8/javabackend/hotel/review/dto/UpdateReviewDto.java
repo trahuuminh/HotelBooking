@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.review.validation.annotation.ExistReviewId;
 
 @Data
 public class UpdateReviewDto {
 	@NotNull
+	@ExistReviewId
 	private Long id;
 	
 	private String title;

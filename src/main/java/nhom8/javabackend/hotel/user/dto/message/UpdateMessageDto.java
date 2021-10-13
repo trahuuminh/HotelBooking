@@ -4,10 +4,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.user.validation.annotation.ExistMessageId;
 
 @Data
 public class UpdateMessageDto {
 	@NotNull
+	@ExistMessageId
 	private Long id;
 	
 	@Email

@@ -61,6 +61,9 @@ public class MessageController {
 	
 	@DeleteMapping("/delete/{message-id}")
 	public Object deleteMessage(@PathVariable("message-id")Long id) {
+		if(!service.isExistedId(id))
+			return ResponseHandler.getResponse("Message doesn't exist",HttpStatus.BAD_REQUEST);
+		
 		service.deleteMessage(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);

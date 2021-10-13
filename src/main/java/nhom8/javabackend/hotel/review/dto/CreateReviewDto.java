@@ -4,9 +4,16 @@ package nhom8.javabackend.hotel.review.dto;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.hotel.validation.annotation.ExitsUserId;
+import nhom8.javabackend.hotel.user.validation.annotation.ExitsHotelId;
 
 @Data
 public class CreateReviewDto {
+	@ExitsUserId
+	private Long authorId;
+	
+	@ExitsHotelId
+	private Long hotelId;
 	
 	private String title;
 	

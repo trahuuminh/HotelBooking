@@ -16,4 +16,5 @@ public interface MessageService {
 	
 	void deleteMessage(Long id);
 	
+	boolean isExistedId(Long id);
 }

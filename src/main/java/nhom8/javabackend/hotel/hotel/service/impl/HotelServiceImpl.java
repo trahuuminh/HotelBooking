@@ -1,14 +1,15 @@
 package nhom8.javabackend.hotel.hotel.service.impl;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
+import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
@@ -29,8 +30,8 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public List<HotelDto> findAllDto() {
-		return repository.findAllDto();
+	public Page<HotelDto> findAllHotel(Pageable pageable) {
+		return repository.findAllDto(pageable);
 	}
 
 	@Override
@@ -82,5 +83,17 @@ public class HotelServiceImpl implements HotelService {
 	@Override
 	public boolean isExistedId(Long hotelId) {
 		return repository.existsById(hotelId);
+	}
+
+	@Override
+	public PagingFormatHotelDto pagingFormat(Page<HotelDto> page) {
+		PagingFormatHotelDto dto=new PagingFormatHotelDto();
+		
+		dto.setPageSize(page.getSize());
+		dto.setTotalRecordCount(page.getTotalElements());
+		dto.setPageNumber(page.getNumber());
+		dto.setRecords(page.toList());
+		
+		return dto;
 	}
 }
