@@ -2,7 +2,6 @@ package nhom8.javabackend.hotel.booking.entity;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -48,7 +47,7 @@ public class Booking extends BaseEntity{
 	@NotNull
 	private LocalDateTime endDate;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private User customer;
 	

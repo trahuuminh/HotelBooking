@@ -13,4 +13,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@Query("SELECT r FROM Review r")
 	Page<ReviewDto> findAllReviewDto(Pageable pageable);
 	
+	
 }

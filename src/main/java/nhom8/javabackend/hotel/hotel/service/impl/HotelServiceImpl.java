@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nhom8.javabackend.hotel.booking.repository.BookingRepository;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
@@ -18,6 +19,7 @@ import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
 import nhom8.javabackend.hotel.location.entity.Location;
 import nhom8.javabackend.hotel.location.repository.LocationRepository;
+import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 
@@ -27,11 +29,19 @@ public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
 	private UserRepository userRepo;
-
+	private AmenitiesRepository amenRepo;
+	private LocationRepository LocRepo;
+	private BookingRepository bookingRepo;
+	private ReviewRepository reviewRepo;
+	
+	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
+			,BookingRepository bookingRepository, ReviewRepository reviewRepository ) {
 		repository = hotelRepository;
 		userRepo=userRepository;
 		amenRepo=amenitieRepo;
 		LocRepo=locationRepo;
+		bookingRepo=bookingRepository;
+		reviewRepo=reviewRepository;
 	}
 
 	@Override
@@ -91,6 +101,7 @@ public class HotelServiceImpl implements HotelService {
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeHotel(hotel);
 		}
+
 		
 		repository.deleteById(hotelId);
 	}
