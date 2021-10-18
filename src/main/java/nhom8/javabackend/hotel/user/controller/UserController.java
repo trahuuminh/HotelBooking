@@ -52,9 +52,9 @@ public class UserController {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		service.createUser(dto);
+		User newUser= service.createUser(dto);
 		
-		return ResponseHandler.getResponse(HttpStatus.CREATED);
+		return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update-user")

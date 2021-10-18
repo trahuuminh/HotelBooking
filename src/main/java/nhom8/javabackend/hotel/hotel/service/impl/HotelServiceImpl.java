@@ -23,7 +23,7 @@ public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
 	private UserRepository userRepo;
-
+	
 	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository) {
 		repository = hotelRepository;
 		userRepo=userRepository;
@@ -77,6 +77,12 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
+		Hotel hotel=repository.getById(hotelId);
+		hotel.getAgent().getListedPost().remove(hotel);
+		for(User user: hotel.getUsersFavourite()) {
+			user.removeHotel(hotel);
+		}
+		
 		repository.deleteById(hotelId);
 	}
 

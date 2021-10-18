@@ -47,4 +47,5 @@ public interface HotelDto {
 	public Set<User> getUsersFavourite();
 
 	public Set<Review> getReviews();
+	
 }

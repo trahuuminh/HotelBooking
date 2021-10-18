@@ -23,7 +23,7 @@ public interface HotelService {
 	Hotel updateHotel(@Valid UpdateHotelDto dto);
 
 	void deleteById(Long hotelId);
-
+	
 	boolean isExistedId(Long hotelId);
 
 }

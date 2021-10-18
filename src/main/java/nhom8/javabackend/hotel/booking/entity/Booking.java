@@ -2,10 +2,10 @@ package nhom8.javabackend.hotel.booking.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -24,8 +24,8 @@ import nhom8.javabackend.hotel.user.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode(callSuper = false)
+@ToString(exclude = {"hotel","customer"})
+@EqualsAndHashCode(callSuper = false, exclude = {"hotel","customer"})
 @Entity
 @Table(name = "booking")
 public class Booking extends BaseEntity{
@@ -48,11 +48,12 @@ public class Booking extends BaseEntity{
 	@NotNull
 	private LocalDateTime endDate;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")
 	private User customer;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "hotel_id")
 	private Hotel hotel;
+	
 }

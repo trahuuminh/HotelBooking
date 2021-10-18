@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
 import nhom8.javabackend.hotel.hotel.util.Status;
 import nhom8.javabackend.hotel.location.entity.Location;
@@ -70,7 +71,7 @@ public class Hotel extends BaseEntity {
 	
 	
 	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.LAZY)
 	@JoinColumn(name = "agent_id", referencedColumnName = "id")
 	private User agent;
 	
@@ -78,7 +79,7 @@ public class Hotel extends BaseEntity {
 	@JoinColumn(name = "amenities_id")
 	private Amenities amenities;
 	
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<HotelImages> images = new HashSet<HotelImages>();
@@ -96,8 +97,14 @@ public class Hotel extends BaseEntity {
 	@Builder.Default
 	private Set<User> usersFavourite = new HashSet<User>();
 	
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Review> reviews = new HashSet<Review>();
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JsonIgnore
+	@Builder.Default
+	private Set<Booking> bookings =new HashSet<Booking>();
+	
 }
