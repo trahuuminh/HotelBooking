@@ -2,6 +2,7 @@ package nhom8.javabackend.hotel.review.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,8 +23,8 @@ import nhom8.javabackend.hotel.user.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode(callSuper = false)
+@ToString(exclude = {"hotel","author"})
+@EqualsAndHashCode(callSuper = false,exclude = {"hotel","author"})
 @Entity
 @Table(name = "review")
 public class Review extends BaseEntity{
@@ -48,7 +49,7 @@ public class Review extends BaseEntity{
 	@JoinColumn(name = "hotel_id")
 	private Hotel hotel;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "author_id")
 	private User author;
 }

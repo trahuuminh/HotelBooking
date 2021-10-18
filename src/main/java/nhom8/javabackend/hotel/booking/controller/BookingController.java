@@ -73,5 +73,11 @@ public class BookingController {
 
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}
-
+	
+	@GetMapping("find-all-booking-by-agent-id")
+	public Object findAllBookingByAgentId(@RequestParam("agent-id") Long agentId,@RequestParam("page") Optional<Integer> p) {
+		Pageable pageable=PageRequest.of(p.orElse(0), 5,Sort.by("id"));
+		Page<BookingDto> bookings=service.findAllBookingByAgentId(agentId, pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(bookings),HttpStatus.OK);
+	}
 }

@@ -25,4 +25,5 @@ public interface BookingService {
 	
 	boolean isExistedId(long bookingId);
 
+	Page<BookingDto> findAllBookingByAgentId(Long id,Pageable pageable);
 }

@@ -27,10 +27,7 @@ public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
 	private UserRepository userRepo;
-	private AmenitiesRepository amenRepo;
-	private LocationRepository LocRepo;
 
-	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo) {
 		repository = hotelRepository;
 		userRepo=userRepository;
 		amenRepo=amenitieRepo;
@@ -89,6 +86,12 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
+		Hotel hotel=repository.getById(hotelId);
+		hotel.getAgent().getListedPost().remove(hotel);
+		for(User user: hotel.getUsersFavourite()) {
+			user.removeHotel(hotel);
+		}
+		
 		repository.deleteById(hotelId);
 	}
 

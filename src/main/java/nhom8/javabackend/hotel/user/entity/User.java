@@ -82,7 +82,7 @@ public class User extends BaseEntity {
 	
 	private String pinterest;
 	
-	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_favourite_post",
 		joinColumns = @JoinColumn(name = "user_id"),
 		inverseJoinColumns = @JoinColumn(name = "hotel_id"))
@@ -98,12 +98,12 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
 	
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Booking> bookings = new HashSet<Booking>();
@@ -127,6 +127,5 @@ public class User extends BaseEntity {
 	public void removeHotel(Hotel hotel) {
 		this.favouritePost.remove(hotel);
 		hotel.getUsersFavourite().remove(this);
-		
 	}
 }

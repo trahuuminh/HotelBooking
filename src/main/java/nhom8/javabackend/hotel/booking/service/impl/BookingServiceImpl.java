@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public Page<BookingDto> findAllBooking(Pageable pageable) {
-		return repository.findAllDto(pageable);
+		return repository.findAllBooking(pageable);
 	}
 
 	@Override
@@ -92,5 +92,10 @@ public class BookingServiceImpl implements BookingService {
 		dto.setRecords(page.toList());
 		
 		return dto;
+	}
+
+	@Override
+	public Page<BookingDto> findAllBookingByAgentId(Long agentId, Pageable pageable) {
+		return repository.findAllBookingByAgentId(agentId, pageable);
 	}
 }
