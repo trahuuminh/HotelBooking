@@ -21,4 +21,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
 	@Query("SELECT b FROM Booking b JOIN b.hotel h JOIN h.agent a WHERE a.id = ?1 ")
 	Page<BookingDto> findAllBookingByAgentId(Long agentId,Pageable pageable);
 	
+	
 }
