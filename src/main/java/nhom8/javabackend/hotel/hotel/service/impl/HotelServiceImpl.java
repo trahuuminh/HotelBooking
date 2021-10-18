@@ -11,9 +11,13 @@ import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
+import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.repository.AmenitiesRepository;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
+import nhom8.javabackend.hotel.location.entity.Location;
+import nhom8.javabackend.hotel.location.repository.LocationRepository;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 
@@ -23,10 +27,11 @@ public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
 	private UserRepository userRepo;
-	
-	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository) {
+
 		repository = hotelRepository;
 		userRepo=userRepository;
+		amenRepo=amenitieRepo;
+		LocRepo=locationRepo;
 	}
 
 	@Override
@@ -37,6 +42,8 @@ public class HotelServiceImpl implements HotelService {
 	@Override
 	public Hotel addNewHotel(@Valid CreateHotelDto dto) {
 		User agent=userRepo.getById(dto.getAgentId());
+		Amenities amen=amenRepo.getById(dto.getAmenitiesId());
+		Location loc=LocRepo.getById(dto.getLocationId());
 		Hotel newHotel = new Hotel();
 
 		newHotel.setTitle(dto.getTitle());
@@ -51,6 +58,8 @@ public class HotelServiceImpl implements HotelService {
 		newHotel.setContactNumber(dto.getContactNumber());
 		newHotel.setTermsAndCondition(dto.getTermsAndCondition());
 		newHotel.setAgent(agent);
+		newHotel.setAmenities(amen);
+		newHotel.setLocation(loc);
 		
 		return repository.save(newHotel);
 	}

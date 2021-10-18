@@ -14,6 +14,12 @@ public class CreateHotelDto {
 	@ExitsUserId
 	private Long agentId;
 	
+	@NotNull
+	private Long amenitiesId;
+	
+	@NotNull
+	private Long locationId;
+	
 	private String title;
 
 	private String slug;
