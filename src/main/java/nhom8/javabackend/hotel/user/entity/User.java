@@ -98,7 +98,7 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
@@ -108,12 +108,12 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Booking> bookings = new HashSet<Booking>();
 	
-	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Review> reviews = new HashSet<Review>();
 	
-	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Message> messages = new HashSet<Message>();
