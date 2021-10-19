@@ -12,4 +12,7 @@ public interface HotelImagesRepository extends JpaRepository<HotelImages, Long> 
 
 	@Query("SELECT hi FROM HotelImages hi")
 	List<HotelImagesDto> findAllHotelImagesDto();
+	
+	@Query("SELECT hi.id FROM HotelImages hi JOIN hi.hotel h WHERE h.id = ?1")
+	List<Long> findAllHotelImagesIdByHotelId(Long hotelId);
 }

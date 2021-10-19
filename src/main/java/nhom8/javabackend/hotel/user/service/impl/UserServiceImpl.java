@@ -8,14 +8,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import nhom8.javabackend.hotel.booking.repository.BookingRepository;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
+import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.PagingFormatUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
+import nhom8.javabackend.hotel.user.repository.MessageRepository;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
 import nhom8.javabackend.hotel.user.util.Role;
@@ -26,11 +29,19 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
 	private HotelRepository hotelRepo;
 	private PasswordEncoder encode;
-
-	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder) {
+	private BookingRepository bookingRepo;
+	private ReviewRepository reviewRepo;
+	private MessageRepository messageRepo;
+	
+	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder, BookingRepository bookingRepository,ReviewRepository reviewRepository,
+			MessageRepository messageRepository) {
+		
 		userRepo=userRepository;
 		hotelRepo=hotelRepository;
 		encode=encoder;
+		bookingRepo=bookingRepository;
+		reviewRepo=reviewRepository;
+		messageRepo=messageRepository;
 	}
 	
 	@Override
@@ -86,8 +97,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteUser(Long id) {
-		userRepo.deleteById(id);
+	public void deleteUser(Long userId) {
+		hotelRepo.deleteAllById(hotelRepo.findAllHotelIdByAgentId(userId));
+		bookingRepo.deleteAllById(bookingRepo.findAllBookingIdByCustomerId(userId));
+		reviewRepo.deleteAllById(reviewRepo.findAllReviewIdByAuthorId(userId));
+		messageRepo.deleteAllById(messageRepo.findAllMessageIdByAgentId(userId));
+		
+		User user=userRepo.getById(userId);
+		for(Hotel hotel: user.getFavouritePost()) {
+			hotel.removeFavouriteUser(user);
+		}
+		
+		userRepo.deleteById(userId);
 		
 	}
 
