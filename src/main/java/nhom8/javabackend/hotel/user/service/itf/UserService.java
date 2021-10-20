@@ -30,4 +30,8 @@ public interface UserService  {
 	User addHotel(AddHotelDto dto);
 
 	User removeHotel(@Valid AddHotelDto dto);
+	
+	UserDto getUserByUsername(String username);
+	
+	User getUserByEmail(String email);
 }

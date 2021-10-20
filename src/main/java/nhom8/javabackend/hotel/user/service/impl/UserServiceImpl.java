@@ -156,6 +156,15 @@ public class UserServiceImpl implements UserService {
 		
 		return dto;
 	}
-	
+
+	@Override
+	public UserDto getUserByUsername(String username) {
+		return userRepo.getUserDtoByUsername(username);
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		return userRepo.getByEmail(email);
+	}
 	
 }

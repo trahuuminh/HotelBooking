@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
+import nhom8.javabackend.hotel.security.jwt.JwtUtils;
 import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
@@ -35,9 +36,11 @@ import nhom8.javabackend.hotel.user.service.itf.UserService;
 public class UserController {
 	
 	private UserService service;
+	private JwtUtils jwt;
 	
-	public UserController(UserService userService) {
+	public UserController(UserService userService,JwtUtils jwtUtils) {
 		service=userService;
+		jwt=jwtUtils;
 	}
 	
 	@GetMapping("/find-all-user")
@@ -106,5 +109,20 @@ public class UserController {
 		UserDto user=service.getUserDetails(id);
 		
 		return ResponseHandler.getResponse(user,HttpStatus.OK);
+	}
+	
+	@GetMapping("/get-user-details-from-token/{token}")
+	public Object getUserDetailsFromToken(@PathVariable("token") String token) {
+		try {
+			String username=jwt.getUsernameFromToken(token);
+			
+			UserDto user=service.getUserByUsername(username);
+			
+			return ResponseHandler.getResponse(user,HttpStatus.OK);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return ResponseHandler.getResponse("Unreachable token!",HttpStatus.BAD_REQUEST);
 	}
 }

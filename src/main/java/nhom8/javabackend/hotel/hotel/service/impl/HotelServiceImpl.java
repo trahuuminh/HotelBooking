@@ -104,6 +104,7 @@ public class HotelServiceImpl implements HotelService {
 		hotelImagesRepo.deleteAllById(hotelImagesRepo.findAllHotelImagesIdByHotelId(hotelId));
 		
 		Hotel hotel=repository.getById(hotelId);
+		
 		hotel.getAgent().getListedPost().remove(hotel);
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeHotel(hotel);
