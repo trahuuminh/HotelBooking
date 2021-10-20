@@ -112,7 +112,7 @@ public class UserController {
 		return ResponseHandler.getResponse(user,HttpStatus.OK);
 	}
 	
-	@GetMapping("/get-user-details-from-token")
+	@GetMapping("/current-user")
 	public Object getUserDetailsFromToken(HttpServletRequest request) {
 		String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
 		
