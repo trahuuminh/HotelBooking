@@ -61,7 +61,6 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 	
-	@NotNull
 	private String cellNumber;
 	
 	private String dateOfBirth;
