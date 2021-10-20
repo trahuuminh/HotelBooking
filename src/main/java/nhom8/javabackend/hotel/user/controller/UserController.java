@@ -4,6 +4,7 @@ package nhom8.javabackend.hotel.user.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -111,18 +112,10 @@ public class UserController {
 		return ResponseHandler.getResponse(user,HttpStatus.OK);
 	}
 	
-	@GetMapping("/get-user-details-from-token/{token}")
-	public Object getUserDetailsFromToken(@PathVariable("token") String token) {
-		try {
-			String username=jwt.getUsernameFromToken(token);
-			
-			UserDto user=service.getUserByUsername(username);
-			
-			return ResponseHandler.getResponse(user,HttpStatus.OK);			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	@GetMapping("/get-user-details-from-token")
+	public Object getUserDetailsFromToken(HttpServletRequest request) {
+		String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
 		
-		return ResponseHandler.getResponse("Unreachable token!",HttpStatus.BAD_REQUEST);
+		return ResponseHandler.getResponse(service.getUserByUsername(username),HttpStatus.OK);
 	}
 }
