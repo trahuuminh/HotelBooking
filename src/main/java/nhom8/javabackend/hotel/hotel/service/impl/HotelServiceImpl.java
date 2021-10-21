@@ -27,11 +27,14 @@ public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
 	private UserRepository userRepo;
-
+	private AmenitiesRepository amenRepo;
+	private LocationRepository LocRepo;
+	
+	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepository, LocationRepository locationRepository) {
 		repository = hotelRepository;
 		userRepo=userRepository;
-		amenRepo=amenitieRepo;
-		LocRepo=locationRepo;
+		amenRepo=amenitieRepository;
+		LocRepo=locationRepository;
 	}
 
 	@Override
