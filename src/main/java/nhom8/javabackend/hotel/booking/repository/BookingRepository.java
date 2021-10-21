@@ -1,5 +1,7 @@
 package nhom8.javabackend.hotel.booking.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +23,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
 	@Query("SELECT b FROM Booking b JOIN b.hotel h JOIN h.agent a WHERE a.id = ?1 ")
 	Page<BookingDto> findAllBookingByAgentId(Long agentId,Pageable pageable);
 	
+	@Query("SELECT b.id FROM Booking b JOIN b.hotel h WHERE h.id = ?1")
+	List<Long> findAllBookingIdByHotelId(Long hotelId);
+	
+	@Query("SELECT b.id FROM Booking b JOIN b.customer c WHERE c.id = ?1 ")
+	List<Long>findAllBookingIdByCustomerId(Long customerId);
 }

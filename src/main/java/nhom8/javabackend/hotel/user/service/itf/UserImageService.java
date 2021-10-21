@@ -15,4 +15,6 @@ public interface UserImageService {
 	UserImage updateUserImage(UpdateUserImageDto dto);
 	
 	void deleteUserImage(Long id);
+	
+	boolean isExistedId(Long id);
 }

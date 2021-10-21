@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -61,7 +64,6 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 	
-	@NotNull
 	private String cellNumber;
 	
 	private String dateOfBirth;
@@ -90,15 +92,17 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Hotel> favouritePost = new HashSet<Hotel>();
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "profile_pic_id")
 	private UserImage profilePic;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
@@ -108,12 +112,12 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Booking> bookings = new HashSet<Booking>();
 	
-	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Review> reviews = new HashSet<Review>();
 	
-	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Message> messages = new HashSet<Message>();

@@ -12,4 +12,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 	
 	@Query("SELECT m FROM Message m")
 	List<MessageDto> findAllMessageDto();
+	
+	@Query("SELECT m.id FROM Message m JOIN m.agent a WHERE a.id = ?1 ")
+	List<Long>findAllMessageIdByAgentId(Long agentId);
 }

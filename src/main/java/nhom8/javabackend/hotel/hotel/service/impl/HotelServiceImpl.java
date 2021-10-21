@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nhom8.javabackend.hotel.booking.repository.BookingRepository;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
@@ -14,10 +15,12 @@ import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.AmenitiesRepository;
+import nhom8.javabackend.hotel.hotel.repository.HotelImagesRepository;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
 import nhom8.javabackend.hotel.location.entity.Location;
 import nhom8.javabackend.hotel.location.repository.LocationRepository;
+import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 
@@ -29,12 +32,19 @@ public class HotelServiceImpl implements HotelService {
 	private UserRepository userRepo;
 	private AmenitiesRepository amenRepo;
 	private LocationRepository LocRepo;
+	private BookingRepository bookingRepo;
+	private ReviewRepository reviewRepo;
+	private HotelImagesRepository hotelImagesRepo;
 	
-	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepository, LocationRepository locationRepository) {
+	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
+			,BookingRepository bookingRepository, ReviewRepository reviewRepository,HotelImagesRepository hotelImagesRepository ) {
 		repository = hotelRepository;
 		userRepo=userRepository;
-		amenRepo=amenitieRepository;
-		LocRepo=locationRepository;
+		amenRepo=amenitieRepo;
+		LocRepo=locationRepo;
+		bookingRepo=bookingRepository;
+		reviewRepo=reviewRepository;
+		hotelImagesRepo=hotelImagesRepository;
 	}
 
 	@Override
@@ -89,13 +99,18 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
+		bookingRepo.deleteAllById(bookingRepo.findAllBookingIdByHotelId(hotelId));;
+		reviewRepo.deleteAllById(reviewRepo.findAllReviewIdByHotelId(hotelId));
+		hotelImagesRepo.deleteAllById(hotelImagesRepo.findAllHotelImagesIdByHotelId(hotelId));
+		
 		Hotel hotel=repository.getById(hotelId);
+		
 		hotel.getAgent().getListedPost().remove(hotel);
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeHotel(hotel);
 		}
 		
-		repository.deleteById(hotelId);
+		repository.deleteById(hotelId);;
 	}
 
 	@Override

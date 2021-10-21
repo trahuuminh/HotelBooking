@@ -107,4 +107,8 @@ public class Hotel extends BaseEntity {
 	@Builder.Default
 	private Set<Booking> bookings =new HashSet<Booking>();
 	
+	public void removeFavouriteUser(User user) {
+		this.usersFavourite.remove(user);
+		user.getFavouritePost().remove(this);
+	}
 }
