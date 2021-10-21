@@ -49,4 +49,10 @@ public class UserImageServiceImpl implements UserImageService {
 	public void deleteUserImage(Long id) {
 		userImageRepo.deleteById(id);	
 	}
+
+	@Override
+	public boolean isExistedId(Long id) {
+		return userImageRepo.existsById(id);
+	}
+	
 }

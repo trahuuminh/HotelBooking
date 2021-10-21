@@ -2,6 +2,9 @@ package nhom8.javabackend.hotel.user.controller;
 
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
@@ -29,19 +33,24 @@ import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
+import nhom8.javabackend.hotel.user.dto.userimage.CreateUserImageDto;
 import nhom8.javabackend.hotel.user.entity.User;
+import nhom8.javabackend.hotel.user.entity.UserImage;
+import nhom8.javabackend.hotel.user.service.itf.UserImageService;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-	
+	private final String uploadDir="/src/main/resources/static/user-images/";
 	private UserService service;
 	private JwtUtils jwt;
+	private UserImageService userImageService;
 	
-	public UserController(UserService userService,JwtUtils jwtUtils) {
+	public UserController(UserService userService,JwtUtils jwtUtils,UserImageService userimageService) {
 		service=userService;
 		jwt=jwtUtils;
+		userImageService=userimageService;
 	}
 	
 	@GetMapping("/find-all-user")
@@ -104,18 +113,108 @@ public class UserController {
   }
 	@GetMapping("/get-user-details/{user-id}")
 	public Object getUserDetails(@PathVariable("user-id") Long id) {
-		if(!service.isExistedId(id))
-			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
-		
-		UserDto user=service.getUserDetails(id);
-		
-		return ResponseHandler.getResponse(user,HttpStatus.OK);
+			
+		try {
+			UserDto user=service.getUserDetails(id);
+			
+			return ResponseHandler.getResponse(user,HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
 	}
 	
 	@GetMapping("/current-user")
 	public Object getUserDetailsFromToken(HttpServletRequest request) {
-		String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
-		
-		return ResponseHandler.getResponse(service.getUserByUsername(username),HttpStatus.OK);
+		try {
+			String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
+			
+			return ResponseHandler.getResponse(service.getUserDtoByUsername(username),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+	}
+	
+	@PostMapping("/upload-user-profile-pic")
+	public Object uploadUserProfilePic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+		try {
+			String fileName = file.getOriginalFilename();
+			
+			String userDirectory=Paths.get("").toAbsolutePath().toString();
+			
+			Path folderPath = Paths.get(userDirectory + uploadDir);
+			
+			if(!Files.exists(folderPath)) {
+				Files.createDirectories(folderPath);
+			}
+			
+			Path path = Paths.get(userDirectory + uploadDir + fileName);
+			
+			Files.write(path, file.getBytes());
+			CreateUserImageDto dto=new CreateUserImageDto(fileName,fileName);
+			UserImage userImage=userImageService.createNewUserImage(dto);
+			
+			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			service.setUserProfilePic(user, userImage);
+			return ResponseHandler.getResponse(user, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/upload-user-cover-pic")
+	public Object uploadUserCoverPic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+		try {
+			String fileName = file.getOriginalFilename();
+			
+			String userDirectory=Paths.get("").toAbsolutePath().toString();
+			
+			Path folderPath = Paths.get(userDirectory + uploadDir);
+			
+			if(!Files.exists(folderPath)) {
+				Files.createDirectories(folderPath);
+			}
+			
+			Path path = Paths.get(userDirectory + uploadDir + fileName);
+			
+			Files.write(path, file.getBytes());
+			CreateUserImageDto dto=new CreateUserImageDto(fileName,fileName);
+			UserImage userImage=userImageService.createNewUserImage(dto);
+			
+			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			service.setUserCoverPic(user, userImage);
+			return ResponseHandler.getResponse(user, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@DeleteMapping("/delete-user-profile-pic")
+	public Object deleteUserProfilePic(HttpServletRequest request) {		
+		try {
+			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			userImageService.deleteUserImage(user.getProfilePic().getId());
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+	}
+	
+	@DeleteMapping("/delete-user-cover-pic")
+	public Object deleteUserCoverPic(HttpServletRequest request) {
+		try {
+			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			userImageService.deleteUserImage(user.getCoverPic().getId());
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 	}
 }
