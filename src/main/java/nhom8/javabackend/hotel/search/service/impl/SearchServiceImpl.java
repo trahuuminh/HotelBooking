@@ -1,6 +1,7 @@
 package nhom8.javabackend.hotel.search.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,20 +23,12 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public List<HotelDto> findHotelByKeyword(String keyword) {
-		if (keyword != null) {
-			return repository.findHotelByKeyword(keyword);
-		}
-		return repository.findAllDto();
-
-	}
-
-	@Override
-	public List<HotelDto> findHotelByOption(boolean wifiAvailability, boolean parkingAvailability,
-			boolean poolAvailability, boolean airCondition, boolean extraBedFacility, String lowPrice, String highPrice,
-			int guestRoom, int bedRoom) {
-		return repository.findHotelByOption(wifiAvailability, parkingAvailability, poolAvailability, airCondition,
-				extraBedFacility, lowPrice, highPrice, guestRoom, bedRoom);
+	public List<HotelDto> findHotelByOption(Optional<String> keyword, Optional<String> wifiAvailability, Optional<String> parkingAvailability,
+			Optional<String> poolAvailability, Optional<String> airCondition, Optional<String> extraBedFacility, Optional<Integer> lowPrice, Optional<Integer> highPrice,
+			Optional<Integer> guestRoom, Optional<Integer> bedRoom) {
+		
+		return repository.findHotelByOption(keyword, wifiAvailability, parkingAvailability, poolAvailability,airCondition, extraBedFacility, 
+				lowPrice , highPrice, guestRoom, bedRoom);
 	}
 
 }
