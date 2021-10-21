@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -89,10 +92,12 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Hotel> favouritePost = new HashSet<Hotel>();
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "profile_pic_id")
 	private UserImage profilePic;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;

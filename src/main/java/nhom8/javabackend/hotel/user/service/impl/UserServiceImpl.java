@@ -1,6 +1,7 @@
 package nhom8.javabackend.hotel.user.service.impl;
 
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import nhom8.javabackend.hotel.user.dto.user.PagingFormatUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
+import nhom8.javabackend.hotel.user.entity.UserImage;
 import nhom8.javabackend.hotel.user.repository.MessageRepository;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
 		messageRepo=messageRepository;
 	}
 	
+	@Transactional
 	@Override
 	public Page<UserDto> findAllUser(Pageable pageable) {
 		return userRepo.findAllUser(pageable);
@@ -137,6 +140,7 @@ public class UserServiceImpl implements UserService {
 		return userRepo.save(user);
 	}
 	
+	@Transactional
 	@Override
 	public UserDto getUserDetails(Long id) {
 		if(userRepo.countById(id)==0)
@@ -156,15 +160,34 @@ public class UserServiceImpl implements UserService {
 		
 		return dto;
 	}
-
+	
+	@Transactional
 	@Override
-	public UserDto getUserByUsername(String username) {
+	public UserDto getUserDtoByUsername(String username) {
 		return userRepo.getUserDtoByUsername(username);
 	}
 
+	@Transactional
 	@Override
 	public User getUserByEmail(String email) {
 		return userRepo.getByEmail(email);
 	}
+
+	@Transactional
+	@Override
+	public User getUserByUsername(String username) {
+		return userRepo.getByUsername(username);
+	}
+
+	@Override
+	public User setUserProfilePic(User user, UserImage userImage) {
+		user.setProfilePic(userImage);
+		return userRepo.save(user);
+	}
 	
+	@Override
+	public User setUserCoverPic(User user, UserImage userImage) {
+		user.setCoverPic(userImage);
+		return userRepo.save(user);
+	}
 }
