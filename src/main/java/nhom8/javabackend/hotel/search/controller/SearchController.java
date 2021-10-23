@@ -1,6 +1,7 @@
 package nhom8.javabackend.hotel.search.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,25 +22,20 @@ public class SearchController {
 	public SearchController(SearchService searcService) {
 		service = searcService;
 	}
-
-	@GetMapping("/keyword")
-	public Object findHotelByKeyword(@RequestParam("city") String keyword) {
-		List<HotelDto> listHotels = service.findHotelByKeyword(keyword);
-
-		return ResponseHandler.getResponse(listHotels, HttpStatus.OK);
-	}
 	
-	@GetMapping("/option")
-	public Object searchHotel(@RequestParam("wifiAvailability") boolean wifiAvailability, 
-			@RequestParam("parkingAvailability") boolean parkingAvailability, 
-			@RequestParam("poolAvailability") boolean poolAvailability, 
-			@RequestParam("airCondition") boolean airCondition, 
-			@RequestParam("extraBedFacility") boolean extraBedFacility, 
-			@RequestParam("lowPrice") String lowPrice, 
-			@RequestParam("highPrice") String highPrice, 
-			@RequestParam("guestRoom") int guestRoom, 
-			@RequestParam("bedRoom") int bedRoom) {
-		List<HotelDto> listHotels = service.findHotelByOption(wifiAvailability, parkingAvailability, poolAvailability, airCondition, extraBedFacility, lowPrice, highPrice, guestRoom, bedRoom);
+	@GetMapping("")
+	public Object searchHotel(@RequestParam("city") Optional<String> keyword, 
+			@RequestParam(value="wifiAvailability") Optional<String> wifiAvailability, 
+			@RequestParam(value="parkingAvailability") Optional<String> parkingAvailability, 
+			@RequestParam(value="poolAvailability") Optional<String> poolAvailability, 
+			@RequestParam(value="airCondition") Optional<String> airCondition, 
+			@RequestParam(value="extraBedFacility") Optional<String> extraBedFacility, 
+			@RequestParam(value ="lowPrice") Optional<Integer> lowPrice, 
+			@RequestParam(value="highPrice") Optional<Integer> highPrice, 
+			@RequestParam(value="guestRoom") Optional<Integer> guestRoom, 
+			@RequestParam(value="bedRoom") Optional<Integer> bedRoom) {
+		List<HotelDto> listHotels = service.findHotelByOption(keyword, wifiAvailability, parkingAvailability, poolAvailability, 
+				airCondition, extraBedFacility, lowPrice, highPrice, guestRoom, bedRoom);
 
 		return ResponseHandler.getResponse(listHotels, HttpStatus.OK);
 	}
