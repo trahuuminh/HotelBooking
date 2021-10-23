@@ -96,7 +96,7 @@ public class HotelController {
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}
 	
-	@PostMapping("/upload-user-cover-pic/{hotel-id}")
+	@PostMapping("/upload-hotel-cover-pic/{hotel-id}")
 	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file,@PathVariable("hotel-id")Long hotelId) {
 		try {
 			Calendar date= Calendar.getInstance();
