@@ -28,9 +28,9 @@ public interface UserService  {
 
 	boolean isExistedId(Long userId);
 
-	User addHotel(AddHotelDto dto);
+	User addHotel(AddHotelDto dto, User user);
 
-	User removeHotel(@Valid AddHotelDto dto);
+	User removeHotel(@Valid AddHotelDto dto,User user);
 	
 	UserDto getUserDtoByUsername(String username);
 	
@@ -41,4 +41,8 @@ public interface UserService  {
 	User setUserProfilePic(User user,UserImage userImage);
 	
 	User setUserCoverPic(User user,UserImage userImage);
+	
+	User getUserByUserId(Long userId);
+	
+	User register(CreateUserDto dto);
 }

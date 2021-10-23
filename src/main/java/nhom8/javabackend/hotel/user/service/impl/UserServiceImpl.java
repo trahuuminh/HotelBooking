@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.booking.repository.BookingRepository;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
+import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
@@ -20,7 +22,6 @@ import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.entity.UserImage;
-import nhom8.javabackend.hotel.user.repository.MessageRepository;
 import nhom8.javabackend.hotel.user.repository.UserRepository;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
 import nhom8.javabackend.hotel.user.util.Role;
@@ -33,17 +34,14 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder encode;
 	private BookingRepository bookingRepo;
 	private ReviewRepository reviewRepo;
-	private MessageRepository messageRepo;
 	
-	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder, BookingRepository bookingRepository,ReviewRepository reviewRepository,
-			MessageRepository messageRepository) {
+	public UserServiceImpl(UserRepository userRepository, HotelRepository hotelRepository, PasswordEncoder encoder, BookingRepository bookingRepository,ReviewRepository reviewRepository) {
 		
 		userRepo=userRepository;
 		hotelRepo=hotelRepository;
 		encode=encoder;
 		bookingRepo=bookingRepository;
 		reviewRepo=reviewRepository;
-		messageRepo=messageRepository;
 	}
 	
 	@Transactional
@@ -56,7 +54,7 @@ public class UserServiceImpl implements UserService {
 	public User createUser(CreateUserDto dto) {
 		User user=new User();
 		
-		user.setRole(Role.USER);
+		user.setRole(dto.getRole());
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setUsername(dto.getUsername());
@@ -80,7 +78,6 @@ public class UserServiceImpl implements UserService {
 	public User updateUser(UpdateUserDto dto) {
 		User user=userRepo.getById(dto.getId());
 		
-		user.setRole(dto.getRole());
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setPassword(dto.getPassword());
@@ -101,17 +98,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(Long userId) {
-		hotelRepo.deleteAllById(hotelRepo.findAllHotelIdByAgentId(userId));
-		bookingRepo.deleteAllById(bookingRepo.findAllBookingIdByCustomerId(userId));
-		reviewRepo.deleteAllById(reviewRepo.findAllReviewIdByAuthorId(userId));
-		messageRepo.deleteAllById(messageRepo.findAllMessageIdByAgentId(userId));
 		
 		User user=userRepo.getById(userId);
+		for(Hotel h: user.getListedPost()) {
+			h.setAgent(null);
+			h.getBookings().clear();
+			hotelRepo.save(h);
+		}
+		
+		for(Booking b: user.getBookings()) {
+			b.setCustomer(null);
+			b.setHotel(null);
+			bookingRepo.save(b);
+		}
+		
+		for(Review r: user.getReviews()) {
+			r.setAuthor(null);
+			r.setHotel(null);
+			reviewRepo.save(r);
+		}
+		
 		for(Hotel hotel: user.getFavouritePost()) {
 			hotel.removeFavouriteUser(user);
 		}
 		
-		userRepo.deleteById(userId);
 		
 	}
 
@@ -121,8 +131,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User addHotel(AddHotelDto dto) {
-		User user = userRepo.getById(dto.getUserId());
+	public User addHotel(AddHotelDto dto, User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
 		user.addHotel(hotel);
@@ -131,8 +140,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User removeHotel(@Valid AddHotelDto dto) {
-		User user = userRepo.getById(dto.getUserId()); 
+	public User removeHotel(@Valid AddHotelDto dto,User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
 		user.removeHotel(hotel);
@@ -188,6 +196,35 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User setUserCoverPic(User user, UserImage userImage) {
 		user.setCoverPic(userImage);
+		return userRepo.save(user);
+	}
+
+	@Override
+	public User getUserByUserId(Long userId) {
+		return userRepo.getById(userId);
+	}
+
+	@Override
+	public User register(CreateUserDto dto) {
+		User user=new User();
+		
+		user.setRole(Role.USER);
+		user.setFirstName(dto.getFirstName());
+		user.setLastName(dto.getLastName());
+		user.setUsername(dto.getUsername());
+		user.setPassword(encode.encode(dto.getPassword()));
+		user.setEmail(dto.getEmail());
+		user.setCellNumber(dto.getCellNumber());
+		user.setDateOfBirth(dto.getDateOfBirth());
+		user.setGender(dto.getGender());
+		user.setContent(dto.getContent());
+		user.setLanguage(dto.getLanguage());
+		user.setFacebook(dto.getFacebook());
+		user.setTwitter(dto.getTwitter());
+		user.setLinkedin(dto.getLinkedin());
+		user.setInstagram(dto.getInstagram());
+		user.setPinterest(dto.getPinterest());;
+		
 		return userRepo.save(user);
 	}
 }

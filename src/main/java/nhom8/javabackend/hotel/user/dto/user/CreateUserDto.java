@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.lang.Nullable;
 
 import lombok.Data;
+import nhom8.javabackend.hotel.user.util.Role;
 import nhom8.javabackend.hotel.user.validation.annotation.ExistEmail;
 import nhom8.javabackend.hotel.user.validation.annotation.ExistUsername;
 
@@ -60,4 +61,6 @@ public class CreateUserDto {
 	
 	@Nullable
 	private String pinterest;
+	
+	private Role role;
 }

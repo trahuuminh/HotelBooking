@@ -6,8 +6,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.lang.Nullable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,8 +29,7 @@ public class HotelImages extends BaseEntity {
 	
 	@NotNull
 	private String thumbUrl;
-	
-	@Nullable
+
 	@ManyToOne
 	@JoinColumn(name = "hotel_id")
 	private Hotel hotel;

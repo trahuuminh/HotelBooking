@@ -2,6 +2,7 @@ package nhom8.javabackend.hotel.booking.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -26,14 +27,20 @@ import nhom8.javabackend.hotel.booking.dto.UpdateBookingDto;
 import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.booking.service.itf.BookingService;
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
+import nhom8.javabackend.hotel.security.jwt.JwtUtils;
+import nhom8.javabackend.hotel.user.service.itf.UserService;
 
 @RestController
 @RequestMapping("api/booking")
 public class BookingController {
 	private BookingService service;
-
-	public BookingController(BookingService bookingService) {
+	private JwtUtils jwt;
+	private UserService userService;
+	
+	public BookingController(BookingService bookingService, JwtUtils Jwt,UserService UserService) {
 		service = bookingService;
+		jwt=Jwt;
+		userService=UserService;
 	}
 
 	@GetMapping
@@ -45,11 +52,13 @@ public class BookingController {
 	}
 
 	@PostMapping("/add-booking")
-	public Object addBooking(@Valid @RequestBody CreateBookingDto dto, BindingResult errors) {
+	public Object addBooking(@Valid @RequestBody CreateBookingDto dto, BindingResult errors, HttpServletRequest request) {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
-
-		Booking addedBooking = service.addedNewBooking(dto);
+		else if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("Please sign in before booking hotel",HttpStatus.BAD_REQUEST);
+		
+		Booking addedBooking = service.addedNewBooking(dto, userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 
 		return ResponseHandler.getResponse(addedBooking, HttpStatus.CREATED);
 	}

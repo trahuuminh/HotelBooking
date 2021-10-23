@@ -11,6 +11,8 @@ import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.entity.HotelImages;
+import nhom8.javabackend.hotel.user.entity.User;
 
 public interface HotelService {
 
@@ -18,7 +20,7 @@ public interface HotelService {
 
 	PagingFormatHotelDto pagingFormat (Page<HotelDto> page);
 	
-	Hotel addNewHotel(@Valid CreateHotelDto dto);
+	Hotel addNewHotel(@Valid CreateHotelDto dto,User agent);
 
 	Hotel updateHotel(@Valid UpdateHotelDto dto);
 
@@ -26,4 +28,7 @@ public interface HotelService {
 	
 	boolean isExistedId(Long hotelId);
 
+	Hotel getHotelByHotelId(Long hotelId);
+	
+	Hotel setHotelCoverPic(Hotel hotel,HotelImages image);
 }
