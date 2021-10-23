@@ -42,8 +42,6 @@ public interface HotelDto {
 
 	public Location getLocation();
 
-	public Set<HotelImages> getImages();
-
 	public Set<User> getUsersFavourite();
 
 	public Set<Review> getReviews();

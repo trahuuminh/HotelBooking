@@ -29,7 +29,7 @@ public class UserImageServiceImpl implements UserImageService {
 	public UserImage createNewUserImage(CreateUserImageDto dto) {
 		UserImage userImage=new UserImage();
 		
-		userImage.setName(dto.getName());
+		userImage.setPath(dto.getPath());
 		userImage.setUrl(dto.getUrl());
 		
 		return userImageRepo.save(userImage);
@@ -39,7 +39,7 @@ public class UserImageServiceImpl implements UserImageService {
 	public UserImage updateUserImage(UpdateUserImageDto dto) {
 		UserImage userImage=userImageRepo.getById(dto.getId());
 		
-		userImage.setName(dto.getName());
+		userImage.setPath(dto.getName());
 		userImage.setUrl(dto.getUrl());
 		
 		return userImageRepo.save(userImage);

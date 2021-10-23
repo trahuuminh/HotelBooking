@@ -2,6 +2,7 @@ package nhom8.javabackend.hotel.review.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -26,15 +27,21 @@ import nhom8.javabackend.hotel.review.dto.ReviewDto;
 import nhom8.javabackend.hotel.review.dto.UpdateReviewDto;
 import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.service.itf.ReviewService;
+import nhom8.javabackend.hotel.security.jwt.JwtUtils;
+import nhom8.javabackend.hotel.user.service.itf.UserService;
 
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {
 	
 	private ReviewService service;
+	private UserService userService;
+	private JwtUtils jwt;
 	
-	public ReviewController(ReviewService reviewService) {
+	public ReviewController(ReviewService reviewService,JwtUtils Jwt,UserService UserService) {
 		service=reviewService;
+		jwt=Jwt;
+		userService=UserService;
 	}
 	
 	@GetMapping("/find-all-review")
@@ -46,11 +53,13 @@ public class ReviewController {
 	}
 	
 	@PostMapping("/create-new-review")
-	public Object CreateReview(@Valid @RequestBody CreateReviewDto dto, BindingResult errors) {
+	public Object CreateReview(@Valid @RequestBody CreateReviewDto dto, BindingResult errors,HttpServletRequest request) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		Review review=service.createNewReview(dto);
+		else if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("Please sign in first before leave a review ",HttpStatus.BAD_REQUEST);
+			
+		Review review=service.createNewReview(userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))) ,dto);
 		
 		return ResponseHandler.getResponse(review,HttpStatus.CREATED);
 	}

@@ -12,4 +12,10 @@ public class CreateHotelImagesDto {
 	private String thumbUrl;
 	
 	private Long hotelId;
+	
+	public CreateHotelImagesDto(String url,String thumbUrl,Long hotelId) {
+		this.url=url;
+		this.thumbUrl=thumbUrl;
+		this.hotelId=hotelId;
+	}
 }

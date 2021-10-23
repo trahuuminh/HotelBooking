@@ -2,9 +2,11 @@ package nhom8.javabackend.hotel.user.controller;
 
 
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +86,8 @@ public class UserController {
 	public Object deleteUser(@PathVariable("user-id")Long id) {
 		if(!service.isExistedId(id))
 			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+		else if(service.getUserByUserId(id).getListedPost().size()>0)
+			return ResponseHandler.getResponse("Please delete all this user's hotels first before delete this user !",HttpStatus.BAD_REQUEST);
 		
 		service.deleteUser(id);
 		
@@ -91,23 +95,24 @@ public class UserController {
 	}
 	
 	@PostMapping("/add-hotel")
-	public Object addHotel(@Valid @RequestBody AddHotelDto dto, BindingResult errors) {
+	public Object addHotelToFavouritePost(@Valid @RequestBody AddHotelDto dto, BindingResult errors,HttpServletRequest request) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST); 
+		else if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("please sign in first if you want to add this hotel to your favourite hotel list",HttpStatus.BAD_REQUEST);
 		
-		User updateUser = service.addHotel(dto);
+		User updateUser = service.addHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}
 	
 	
 	@PostMapping("/remove-hotel")
-	public Object removeHotel(@Valid @RequestBody AddHotelDto dto,
-			BindingResult errors) {
+	public Object removeHotelFromFavouritePost(@Valid @RequestBody AddHotelDto dto,BindingResult errors,HttpServletRequest request) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		
-		User updateUser = service.removeHotel(dto);
+		User updateUser = service.removeHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 		
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
   }
@@ -139,7 +144,8 @@ public class UserController {
 	@PostMapping("/upload-user-profile-pic")
 	public Object uploadUserProfilePic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {
-			String fileName = file.getOriginalFilename();
+			Calendar date= Calendar.getInstance();
+			String fileName = file.getOriginalFilename()+"-"+date.getTimeInMillis();
 			
 			String userDirectory=Paths.get("").toAbsolutePath().toString();
 			
@@ -152,7 +158,7 @@ public class UserController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
-			CreateUserImageDto dto=new CreateUserImageDto(fileName,fileName);
+			CreateUserImageDto dto=new CreateUserImageDto(userDirectory + uploadDir + fileName,fileName);
 			UserImage userImage=userImageService.createNewUserImage(dto);
 			
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
@@ -168,7 +174,8 @@ public class UserController {
 	@PostMapping("/upload-user-cover-pic")
 	public Object uploadUserCoverPic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {
-			String fileName = file.getOriginalFilename();
+			Calendar date= Calendar.getInstance();
+			String fileName = file.getOriginalFilename()+"-"+date.getTimeInMillis();
 			
 			String userDirectory=Paths.get("").toAbsolutePath().toString();
 			
@@ -181,7 +188,7 @@ public class UserController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
-			CreateUserImageDto dto=new CreateUserImageDto(fileName,fileName);
+			CreateUserImageDto dto=new CreateUserImageDto(userDirectory + uploadDir + fileName,fileName);
 			UserImage userImage=userImageService.createNewUserImage(dto);
 			
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
@@ -198,7 +205,11 @@ public class UserController {
 	public Object deleteUserProfilePic(HttpServletRequest request) {		
 		try {
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
-			userImageService.deleteUserImage(user.getProfilePic().getId());
+			Long userImageId=user.getProfilePic().getId();
+			File file=new File(user.getProfilePic().getPath());
+			file.delete();
+			service.setUserProfilePic(user, null);
+			userImageService.deleteUserImage(userImageId);
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -210,11 +221,25 @@ public class UserController {
 	public Object deleteUserCoverPic(HttpServletRequest request) {
 		try {
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
-			userImageService.deleteUserImage(user.getCoverPic().getId());
+			Long userImageId=user.getCoverPic().getId();
+			File file=new File(user.getCoverPic().getPath()); 
+			file.delete();
+			service.setUserCoverPic(user, null);
+			userImageService.deleteUserImage(userImageId);
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+	}
+	
+	@PostMapping("/register")
+	public Object register(@Valid @RequestBody CreateUserDto dto,BindingResult errors) {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+		
+		User newUser=service.register(dto);
+		
+		return ResponseHandler.getResponse(newUser,HttpStatus.CREATED);
 	}
 }
