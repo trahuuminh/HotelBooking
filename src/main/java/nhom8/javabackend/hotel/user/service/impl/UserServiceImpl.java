@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 		
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
-		user.setPassword(dto.getPassword());
+		user.setPassword(encode.encode(dto.getPassword()));
 		user.setEmail(dto.getEmail());
 		user.setCellNumber(dto.getCellNumber());
 		user.setDateOfBirth(dto.getDateOfBirth());

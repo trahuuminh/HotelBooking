@@ -17,6 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,11 +52,13 @@ public class UserController {
 	private UserService service;
 	private JwtUtils jwt;
 	private UserImageService userImageService;
+	private final AuthenticationManager authenticationManager;
 	
-	public UserController(UserService userService,JwtUtils jwtUtils,UserImageService userimageService) {
+	public UserController(UserService userService,JwtUtils jwtUtils,UserImageService userimageService,AuthenticationManager authManager) {
 		service=userService;
 		jwt=jwtUtils;
 		userImageService=userimageService;
+		authenticationManager =authManager;
 	}
 	
 	@GetMapping("/find-all-user")
@@ -238,8 +244,19 @@ public class UserController {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		User newUser=service.register(dto);
+		service.register(dto);
+		Authentication auth=null;
 		
-		return ResponseHandler.getResponse(newUser,HttpStatus.CREATED);
+		try {
+			auth= authenticationManager.authenticate
+					(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			String token=jwt.generateJwtToken(auth);
+			return ResponseHandler.getResponse(token,HttpStatus.CREATED);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 	}
 }

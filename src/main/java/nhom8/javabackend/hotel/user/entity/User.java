@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,8 +50,10 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
+	@Nullable
 	private String firstName;
 	
+	@Nullable
 	private String lastName;
 	
 	@NotNull
@@ -64,24 +67,34 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 	
+	@Nullable
 	private String cellNumber;
 	
+	@Nullable
 	private String dateOfBirth;
 	
+	@Nullable
 	private String gender;
 	
+	@Nullable
 	private String content;
 	
+	@Nullable
 	private String language;
 	
+	@Nullable
 	private String facebook;
 	
+	@Nullable
 	private String twitter;
 	
+	@Nullable
 	private String linkedin;
 	
+	@Nullable
 	private String instagram;
 	
+	@Nullable
 	private String pinterest;
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.LAZY)
