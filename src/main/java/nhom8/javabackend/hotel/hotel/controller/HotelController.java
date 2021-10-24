@@ -100,7 +100,7 @@ public class HotelController {
 	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file,@PathVariable("hotel-id")Long hotelId) {
 		try {
 			Calendar date= Calendar.getInstance();
-			String fileName = file.getOriginalFilename()+"-"+date.getTimeInMillis();
+			String fileName = date.getTimeInMillis()+"-"+file.getOriginalFilename();
 			
 			String userDirectory=Paths.get("").toAbsolutePath().toString();
 			
@@ -119,7 +119,7 @@ public class HotelController {
 			Hotel hotel=service.getHotelByHotelId(hotelId);
 			
 			service.setHotelCoverPic(hotel, hotelImage);
-			return ResponseHandler.getResponse(hotel, HttpStatus.OK);
+			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);

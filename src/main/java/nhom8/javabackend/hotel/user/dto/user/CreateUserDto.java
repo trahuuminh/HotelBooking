@@ -25,7 +25,7 @@ public class CreateUserDto {
 	private String username;
 	
 	@NotBlank
-	private String password;
+	private	String password;
 	
 	@ExistEmail
 	@Email
@@ -33,7 +33,7 @@ public class CreateUserDto {
 	private String email;
 	
 	@Nullable
-	private String cellNumber;
+	private	String cellNumber;
 	
 	@Nullable
 	private String dateOfBirth;
