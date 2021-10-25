@@ -2,7 +2,7 @@ spring:
   datasource: 
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password: minhthichlag
+    password: hieu949922
   jpa:
     show-sql: true
     generate-ddl: true
