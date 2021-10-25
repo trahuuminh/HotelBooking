@@ -71,7 +71,7 @@ public class UserController {
 			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
 				return ResponseHandler.getResponse("you're not allowed to search all users details",HttpStatus.BAD_REQUEST);
 			
-			Pageable pageable=PageRequest.of(p.orElse(0),22,Sort.by("id"));
+			Pageable pageable=PageRequest.of(p.orElse(0),12,Sort.by("id"));
 			Page<UserDto> users=service.findAllUser(pageable);
 			return ResponseHandler.getResponse(service.pagingFormat(users),HttpStatus.OK);
 		} catch (Exception e) {

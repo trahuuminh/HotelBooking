@@ -134,4 +134,9 @@ public class HotelServiceImpl implements HotelService {
 		hotel.setCoverPic(image);
 		return repository.save(hotel);
 	}
+	
+	@Override
+	public HotelDto getHotelBySlugName(String slug) {
+		return repository.getOneBySlug(slug);
+	}
 }

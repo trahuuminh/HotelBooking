@@ -31,4 +31,6 @@ public interface HotelService {
 	Hotel getHotelByHotelId(Long hotelId);
 	
 	Hotel setHotelCoverPic(Hotel hotel,HotelImages image);
+
+	HotelDto getHotelBySlugName(String slug);
 }
