@@ -129,11 +129,12 @@ public class UserController {
 		try {
 			if(jwt.getJwtTokenFromRequest(request)==null)
 				return ResponseHandler.getResponse("please sign in first before delete",HttpStatus.BAD_REQUEST);
-			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
-				return ResponseHandler.getResponse("you're not allowed to delete this user",HttpStatus.BAD_REQUEST);
-				
+			
 			else if(!service.isExistedId(id))
 				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+			
+			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to delete this user",HttpStatus.BAD_REQUEST);
 			
 			else if(service.getUserByUserId(id).getListedPost().size()>0)
 				return ResponseHandler.getResponse("Please delete all this user's hotels first before delete this user !",HttpStatus.BAD_REQUEST);

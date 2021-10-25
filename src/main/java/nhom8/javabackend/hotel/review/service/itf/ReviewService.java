@@ -23,4 +23,6 @@ public interface ReviewService {
 	void deleteReview(Long id);
 	
 	boolean isExistedId(Long id);
+	
+	Review getReivewByReviewId(Long reviewId);
 }

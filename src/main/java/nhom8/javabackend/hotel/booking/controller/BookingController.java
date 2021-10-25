@@ -28,6 +28,7 @@ import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.booking.service.itf.BookingService;
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
+import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
 import nhom8.javabackend.hotel.user.util.Role;
 
@@ -98,10 +99,12 @@ public class BookingController {
 		try {
 			if(jwt.getJwtTokenFromRequest(request)==null)
 				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
-			else if(userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))) != service.getBookingByBookingId(bookingId).getCustomer())
-				return ResponseHandler.getResponse("you're not allowed to delete this booking",HttpStatus.BAD_REQUEST);	
+			
 			else if(!service.isExistedId(bookingId))
 				return ResponseHandler.getResponse("Booking doesn't exist",HttpStatus.BAD_REQUEST);
+			
+			else if(userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))) != service.getBookingByBookingId(bookingId).getCustomer())
+				return ResponseHandler.getResponse("you're not allowed to delete this booking",HttpStatus.BAD_REQUEST);	
 			
 			service.deleteById(bookingId);
 
@@ -113,9 +116,25 @@ public class BookingController {
 	}
 	
 	@GetMapping("find-all-booking-by-agent-id")
-	public Object findAllBookingByAgentId(@RequestParam("agent-id") Long agentId,@RequestParam("page") Optional<Integer> p) {
-		Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id"));
-		Page<BookingDto> bookings=service.findAllBookingByAgentId(agentId, pageable);
-		return ResponseHandler.getResponse(service.pagingFormat(bookings),HttpStatus.OK);
+	public Object findAllBookingByAgentId(@RequestParam("agent-id") Long agentId,@RequestParam("page") Optional<Integer> p,HttpServletRequest request) {
+		try {
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
+			
+			User currentUser =userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(!userService.isExistedId(agentId))
+				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+			
+			else if(!currentUser.getRole().equals(Role.ADMIN) && currentUser.getId() != agentId)
+				return ResponseHandler.getResponse("you're not allowed to find all of this user's bookings",HttpStatus.BAD_REQUEST);
+			
+			Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id"));
+			Page<BookingDto> bookings=service.findAllBookingByAgentId(agentId, pageable);
+			return ResponseHandler.getResponse(service.pagingFormat(bookings),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 }
