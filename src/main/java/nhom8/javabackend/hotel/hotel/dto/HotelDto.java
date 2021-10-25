@@ -22,7 +22,7 @@ public interface HotelDto {
 
 	public String getPrice();
 
-	public String getIsNegotiable();
+	public boolean getIsNegotiable();
 
 	public String getCondition();
 
@@ -38,11 +38,11 @@ public interface HotelDto {
 
 	public Amenities getAmenities();
 
+	public Set<HotelImages> getImages();
+	
 	public HotelImages getCoverPic();
 
 	public Location getLocation();
-
-	public Set<User> getUsersFavourite();
 
 	public Set<Review> getReviews();
 	

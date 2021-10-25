@@ -31,7 +31,7 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 		return hotelImagesRepo.findAllHotelImagesDto();
 	}
 
-	@Transactional
+
 	@Override
 	public HotelImages createNewHotelImages(CreateHotelImagesDto dto) {
 		HotelImages hotelImages=new HotelImages();
