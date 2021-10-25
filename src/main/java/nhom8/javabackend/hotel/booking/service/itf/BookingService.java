@@ -28,4 +28,5 @@ public interface BookingService {
 
 	Page<BookingDto> findAllBookingByAgentId(Long id,Pageable pageable);
 	
+	Booking getBookingByBookingId(Long bookingId);
 }

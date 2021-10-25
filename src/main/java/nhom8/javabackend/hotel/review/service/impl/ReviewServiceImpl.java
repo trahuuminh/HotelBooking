@@ -87,6 +87,11 @@ public class ReviewServiceImpl implements ReviewService{
 		
 		return dto;
 	}
+
+	@Override
+	public Review getReivewByReviewId(Long reviewId) {
+		return reviewRepo.getById(reviewId);
+	}
 	
 	
 	

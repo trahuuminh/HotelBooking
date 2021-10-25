@@ -28,7 +28,9 @@ import nhom8.javabackend.hotel.review.dto.UpdateReviewDto;
 import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.service.itf.ReviewService;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
+import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @RestController
 @RequestMapping("/api/review")
@@ -45,11 +47,21 @@ public class ReviewController {
 	}
 	
 	@GetMapping("/find-all-review")
-	public Object findAllReview(@RequestParam("p") Optional<Integer>p) {
-		Pageable pageable=PageRequest.of(p.orElse(0), 5,Sort.by("id"));
-		Page<ReviewDto> reviews=service.findAllReviewDto(pageable);
-		
-		return ResponseHandler.getResponse(service.pagingFormat(reviews),HttpStatus.OK);
+	public Object findAllReview(@RequestParam("p") Optional<Integer>p,HttpServletRequest request) {
+		try {
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
+			else if(!userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to search all reviews",HttpStatus.BAD_REQUEST);
+			
+			Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id"));
+			Page<ReviewDto> reviews=service.findAllReviewDto(pageable);
+			
+			return ResponseHandler.getResponse(service.pagingFormat(reviews),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PostMapping("/create-new-review")
@@ -65,22 +77,48 @@ public class ReviewController {
 	}
 	
 	@PutMapping("/update-review")
-	public Object updateReview(@Valid @RequestBody UpdateReviewDto dto, BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		Review review=service.updateReview(dto);
-		
-		return ResponseHandler.getResponse(review,HttpStatus.OK);
+	public Object updateReview(@Valid @RequestBody UpdateReviewDto dto, BindingResult errors,HttpServletRequest request) {
+		try {
+			if(errors.hasErrors())
+				return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+			else if(jwt.getJwtTokenFromRequest(request)==null)
+				
+				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
+			
+			User currentUser = userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(!currentUser.getRole().equals(Role.ADMIN) && currentUser != service.getReivewByReviewId(dto.getId()).getAuthor())
+				return ResponseHandler.getResponse("you're not allowed to update this review",HttpStatus.BAD_REQUEST);
+			
+			Review review=service.updateReview(dto);
+			
+			return ResponseHandler.getResponse(review,HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@DeleteMapping("/delete/{review-id}")
-	public Object deleteReview(@PathVariable("review-id") Long id) {
-		if(!service.isExistedId(id))
-			return ResponseHandler.getResponse("Review doesn't exist",HttpStatus.BAD_REQUEST);
-		
-		service.deleteReview(id);
-		
-		return ResponseHandler.getResponse(HttpStatus.OK);
+	public Object deleteReview(@PathVariable("review-id") Long id,HttpServletRequest request) {
+		try {
+			if(!service.isExistedId(id))
+				return ResponseHandler.getResponse("Review doesn't exist",HttpStatus.BAD_REQUEST);
+			
+			else if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
+			
+			User currentUser = userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(!currentUser.getRole().equals(Role.ADMIN) && currentUser != service.getReivewByReviewId(id).getAuthor())
+				return ResponseHandler.getResponse("you're not allowed to delete this review",HttpStatus.BAD_REQUEST);
+			
+			service.deleteReview(id);
+			
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 }

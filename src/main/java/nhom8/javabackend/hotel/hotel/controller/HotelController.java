@@ -36,7 +36,9 @@ import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
+import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @RestController
 @RequestMapping("/api/hotel")
@@ -56,7 +58,7 @@ public class HotelController {
 
 	@GetMapping
 	public Object findAllHotels(@RequestParam("p") Optional<Integer> p) {
-		Pageable pageable= PageRequest.of(p.orElse(0), 5,Sort.by("id"));
+		Pageable pageable= PageRequest.of(p.orElse(0), 22,Sort.by("id"));
 		Page<HotelDto> hotels = service.findAllHotel(pageable);
 		return ResponseHandler.getResponse(service.pagingFormat(hotels), HttpStatus.OK);
 
@@ -75,25 +77,50 @@ public class HotelController {
 	}
 
 	@PutMapping("/update-hotel")
-	public Object updateHotel(@Valid @RequestBody UpdateHotelDto dto, BindingResult errors) {
-		if (errors.hasErrors())
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+	public Object updateHotel(@Valid @RequestBody UpdateHotelDto dto, BindingResult errors,HttpServletRequest request) {
+		try {
+			if (errors.hasErrors())
+				return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+			else if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);
+			
+			User currentUser = userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(currentUser.getId()!=service.getHotelByHotelId(dto.getId()).getAgent().getId() && !currentUser.getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to update this hotel",HttpStatus.BAD_REQUEST);
+			
+			Hotel updateHotel = service.updateHotel(dto);
 
-		Hotel updateHotel = service.updateHotel(dto);
-
-		return ResponseHandler.getResponse(updateHotel, HttpStatus.OK);
+			return ResponseHandler.getResponse(updateHotel, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@DeleteMapping("/delete-hotel/{hotel-id}")
-	public Object deleteHotel(@PathVariable("hotel-id") Long hotelId) {
-		if(!service.isExistedId(hotelId))
-			return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
-		else if(service.getHotelByHotelId(hotelId).getBookings().size()>0)
-			return ResponseHandler.getResponse("Please delete all bookings before delete hotel !",HttpStatus.BAD_REQUEST);
-		
-		service.deleteById(hotelId);
+	public Object deleteHotel(@PathVariable("hotel-id") Long hotelId, HttpServletRequest request) {
+		try {
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first ",HttpStatus.BAD_REQUEST);
+			
+			User currentUser =userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(currentUser.getId() != service.getHotelByHotelId(hotelId).getAgent().getId() && !currentUser.getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to delete this hotel",HttpStatus.BAD_REQUEST);
+			
+			if(!service.isExistedId(hotelId))
+				return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
+			else if(service.getHotelByHotelId(hotelId).getBookings().size()>0)
+				return ResponseHandler.getResponse("Please delete all bookings before delete hotel !",HttpStatus.BAD_REQUEST);
+			
+			service.deleteById(hotelId);
 
-		return ResponseHandler.getResponse(HttpStatus.OK);
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PostMapping("/upload-hotel-cover-pic/{hotel-id}")

@@ -1,7 +1,5 @@
 package nhom8.javabackend.hotel.user.dto.user;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -17,11 +15,8 @@ public class UpdateUserDto {
 	
 	private String lastName;
 	
-	@NotBlank
 	private String password;
 	
-	@Email
-	@NotBlank
 	private String email;
 	
 	private String cellNumber;

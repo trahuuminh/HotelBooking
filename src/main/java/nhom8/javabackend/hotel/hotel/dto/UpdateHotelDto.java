@@ -21,23 +21,18 @@ public class UpdateHotelDto {
 
 	private String content;
 
-	@NotNull
 	private Status status;
 
-	@NotNull
 	private String price;
 
 	private boolean isNegotiable;
 
 	private String condition;
 
-	@NotNull
 	private int rating;
 
-	@NotNull
 	private int ratingCount;
 
-	@NotNull
 	private String contactNumber;
 
 	private String termsAndCondition;
