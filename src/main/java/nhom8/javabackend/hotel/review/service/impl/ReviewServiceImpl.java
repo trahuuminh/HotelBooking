@@ -16,18 +16,15 @@ import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.review.service.itf.ReviewService;
 import nhom8.javabackend.hotel.user.entity.User;
-import nhom8.javabackend.hotel.user.repository.UserRepository;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
 
 	private ReviewRepository reviewRepo;
-	private UserRepository userRepo;
 	private HotelRepository hotelRepo;
 	
-	public ReviewServiceImpl(ReviewRepository reviewRepository,UserRepository userRepository,HotelRepository hotelRepository) {
+	public ReviewServiceImpl(ReviewRepository reviewRepository,HotelRepository hotelRepository) {
 		reviewRepo=reviewRepository;
-		userRepo=userRepository;
 		hotelRepo=hotelRepository;
 	}
 	
@@ -37,9 +34,8 @@ public class ReviewServiceImpl implements ReviewService{
 	}
 
 	@Override
-	public Review createNewReview(CreateReviewDto dto) {
+	public Review createNewReview(User author, CreateReviewDto dto) {
 		Review review =new Review();
-		User author=userRepo.getById(dto.getAuthorId());
 		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		
 		review.setAuthor(author);
@@ -90,6 +86,11 @@ public class ReviewServiceImpl implements ReviewService{
 		dto.setRecords(page.toList());
 		
 		return dto;
+	}
+
+	@Override
+	public Review getReivewByReviewId(Long reviewId) {
+		return reviewRepo.getById(reviewId);
 	}
 	
 	

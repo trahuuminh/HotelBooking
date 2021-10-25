@@ -5,14 +5,10 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import nhom8.javabackend.hotel.hotel.util.Status;
-import nhom8.javabackend.hotel.hotel.validation.annotation.ExitsUserId;
 
 @Getter
 @Setter
 public class CreateHotelDto {
-	@NotNull
-	@ExitsUserId
-	private Long agentId;
 	
 	@NotNull
 	private Long amenitiesId;

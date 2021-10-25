@@ -17,18 +17,15 @@ import nhom8.javabackend.hotel.booking.service.itf.BookingService;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.user.entity.User;
-import nhom8.javabackend.hotel.user.repository.UserRepository;
 
 @Service
 @Transactional
 public class BookingServiceImpl implements BookingService {
 	private BookingRepository repository;
-	private UserRepository userRepo;
 	private HotelRepository hotelRepo;
 	
-	public BookingServiceImpl(BookingRepository bookingRepository,UserRepository userRepository,HotelRepository hotelRepository) {
+	public BookingServiceImpl(BookingRepository bookingRepository,HotelRepository hotelRepository) {
 		repository = bookingRepository;
-		userRepo=userRepository;
 		hotelRepo=hotelRepository;
 	}
 
@@ -38,9 +35,8 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public Booking addedNewBooking(@Valid CreateBookingDto dto) {
+	public Booking addedNewBooking(@Valid CreateBookingDto dto, User customer) {
 		Booking newBooking = new Booking();
-		User customer=userRepo.getById(dto.getCustomerId());
 		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		
 		newBooking.setCustomer(customer);
@@ -98,4 +94,11 @@ public class BookingServiceImpl implements BookingService {
 	public Page<BookingDto> findAllBookingByAgentId(Long agentId, Pageable pageable) {
 		return repository.findAllBookingByAgentId(agentId, pageable);
 	}
+
+	@Override
+	public Booking getBookingByBookingId(Long bookingId) {
+		return repository.getById(bookingId);
+	}
+
+	
 }

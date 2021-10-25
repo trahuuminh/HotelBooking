@@ -21,7 +21,7 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 @Table(name = "user_image")
 public class UserImage extends BaseEntity{
 
-	private String name;
+	private String path;
 	
 	private String url;
 }

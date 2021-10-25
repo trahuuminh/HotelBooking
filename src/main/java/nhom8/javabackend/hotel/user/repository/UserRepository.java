@@ -13,13 +13,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	User getByUsername(String username);
 	
+	@Query("SELECT u FROM User u WHERE u.username = ?1")
+	UserDto getUserDtoByUsername(String username);
+	
 	int countById(Long id);
 	
 	@Query("SELECT u FROM User u WHERE u.id= ?1")
 	UserDto getUserById(Long id);
 	
 	@Query("SELECT u FROM User u")
-	Page<UserDto> findAllUser(Pageable pageable);
-
+	Page<UserDto> findAllUser(Pageable pageable); 
 	
+	User getByEmail(String email);
 }

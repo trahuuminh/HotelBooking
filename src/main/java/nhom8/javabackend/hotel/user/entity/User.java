@@ -18,6 +18,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.lang.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -46,8 +50,10 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
+	@Nullable
 	private String firstName;
 	
+	@Nullable
 	private String lastName;
 	
 	@NotNull
@@ -61,25 +67,34 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 	
-	@NotNull
+	@Nullable
 	private String cellNumber;
 	
+	@Nullable
 	private String dateOfBirth;
 	
+	@Nullable
 	private String gender;
 	
+	@Nullable
 	private String content;
 	
+	@Nullable
 	private String language;
 	
+	@Nullable
 	private String facebook;
 	
+	@Nullable
 	private String twitter;
 	
+	@Nullable
 	private String linkedin;
 	
+	@Nullable
 	private String instagram;
 	
+	@Nullable
 	private String pinterest;
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.LAZY)
@@ -90,15 +105,17 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Hotel> favouritePost = new HashSet<Hotel>();
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "profile_pic_id")
 	private UserImage profilePic;
 	
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToOne
 	@JoinColumn(name = "cover_pic_id")
 	private UserImage coverPic;
 	
-	@OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Hotel> listedPost = new HashSet<Hotel>();
@@ -108,12 +125,12 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Booking> bookings = new HashSet<Booking>();
 	
-	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Review> reviews = new HashSet<Review>();
 	
-	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "agent",cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
 	private Set<Message> messages = new HashSet<Message>();

@@ -2,8 +2,8 @@ package nhom8.javabackend.hotel.hotel.dto;
 
 import java.util.Set;
 
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.Amenities;
-import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.util.Status;
 import nhom8.javabackend.hotel.location.entity.Location;
 import nhom8.javabackend.hotel.review.entity.Review;
@@ -22,7 +22,7 @@ public interface HotelDto {
 
 	public String getPrice();
 
-	public String getIsNegotiable();
+	public boolean getIsNegotiable();
 
 	public String getCondition();
 
@@ -38,13 +38,11 @@ public interface HotelDto {
 
 	public Amenities getAmenities();
 
-	public HotelImages getCoverPic();
+	public Set<HotelImagesDto> getImages();
+	
+	public HotelImagesDto getCoverPic();
 
 	public Location getLocation();
-
-	public Set<HotelImages> getImages();
-
-	public Set<User> getUsersFavourite();
 
 	public Set<Review> getReviews();
 	

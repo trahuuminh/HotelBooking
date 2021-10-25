@@ -7,40 +7,36 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nhom8.javabackend.hotel.booking.repository.BookingRepository;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.repository.AmenitiesRepository;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
 import nhom8.javabackend.hotel.location.entity.Location;
 import nhom8.javabackend.hotel.location.repository.LocationRepository;
+import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.repository.ReviewRepository;
 import nhom8.javabackend.hotel.user.entity.User;
-import nhom8.javabackend.hotel.user.repository.UserRepository;
 
 @Service
 @Transactional
 public class HotelServiceImpl implements HotelService {
 
 	private HotelRepository repository;
-	private UserRepository userRepo;
 	private AmenitiesRepository amenRepo;
 	private LocationRepository LocRepo;
-	private BookingRepository bookingRepo;
 	private ReviewRepository reviewRepo;
 	
-	public HotelServiceImpl(HotelRepository hotelRepository, UserRepository userRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
-			,BookingRepository bookingRepository, ReviewRepository reviewRepository ) {
+	public HotelServiceImpl(HotelRepository hotelRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
+			, ReviewRepository reviewRepository ) {
 		repository = hotelRepository;
-		userRepo=userRepository;
 		amenRepo=amenitieRepo;
 		LocRepo=locationRepo;
-		bookingRepo=bookingRepository;
 		reviewRepo=reviewRepository;
 	}
 
@@ -50,8 +46,7 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Hotel addNewHotel(@Valid CreateHotelDto dto) {
-		User agent=userRepo.getById(dto.getAgentId());
+	public Hotel addNewHotel(@Valid CreateHotelDto dto,User agent) {
 		Amenities amen=amenRepo.getById(dto.getAmenitiesId());
 		Location loc=LocRepo.getById(dto.getLocationId());
 		Hotel newHotel = new Hotel();
@@ -96,14 +91,20 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
+		
 		Hotel hotel=repository.getById(hotelId);
+		
+		for(Review r: hotel.getReviews()) {
+			r.setAuthor(null);
+			r.setHotel(null);
+			reviewRepo.save(r);
+		}
+		
 		hotel.getAgent().getListedPost().remove(hotel);
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeHotel(hotel);
 		}
-
 		
-		repository.deleteById(hotelId);
 	}
 
 	@Override
@@ -121,5 +122,21 @@ public class HotelServiceImpl implements HotelService {
 		dto.setRecords(page.toList());
 		
 		return dto;
+	}
+
+	@Override
+	public Hotel getHotelByHotelId(Long hotelId) {
+		return repository.getById(hotelId);
+	}
+
+	@Override
+	public Hotel setHotelCoverPic(Hotel hotel, HotelImages image) {
+		hotel.setCoverPic(image);
+		return repository.save(hotel);
+	}
+	
+	@Override
+	public HotelDto getHotelBySlugName(String slug) {
+		return repository.getOneBySlug(slug);
 	}
 }

@@ -10,6 +10,7 @@ import nhom8.javabackend.hotel.booking.dto.CreateBookingDto;
 import nhom8.javabackend.hotel.booking.dto.PagingFormatBookingDto;
 import nhom8.javabackend.hotel.booking.dto.UpdateBookingDto;
 import nhom8.javabackend.hotel.booking.entity.Booking;
+import nhom8.javabackend.hotel.user.entity.User;
 
 public interface BookingService {
 
@@ -17,7 +18,7 @@ public interface BookingService {
 	
 	PagingFormatBookingDto pagingFormat(Page<BookingDto> page);
 
-	Booking addedNewBooking(@Valid CreateBookingDto dto);
+	Booking addedNewBooking(@Valid CreateBookingDto dto, User customer);
 
 	Booking updateBooking(@Valid UpdateBookingDto dto);
 
@@ -26,4 +27,6 @@ public interface BookingService {
 	boolean isExistedId(long bookingId);
 
 	Page<BookingDto> findAllBookingByAgentId(Long id,Pageable pageable);
+	
+	Booking getBookingByBookingId(Long bookingId);
 }

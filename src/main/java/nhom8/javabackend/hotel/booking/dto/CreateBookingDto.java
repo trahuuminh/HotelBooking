@@ -7,15 +7,11 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
 import lombok.Setter;
-import nhom8.javabackend.hotel.hotel.validation.annotation.ExitsUserId;
 import nhom8.javabackend.hotel.user.validation.annotation.ExitsHotelId;
 
 @Getter
 @Setter
 public class CreateBookingDto {
-	
-	@ExitsUserId
-	private Long CustomerId;
 	
 	@ExitsHotelId
 	private Long HotelId;
