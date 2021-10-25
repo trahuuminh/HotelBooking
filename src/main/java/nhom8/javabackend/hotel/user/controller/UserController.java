@@ -44,6 +44,7 @@ import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.entity.UserImage;
 import nhom8.javabackend.hotel.user.service.itf.UserImageService;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
+import nhom8.javabackend.hotel.user.util.Role;
 
 @RestController
 @RequestMapping("/api/user")
@@ -62,42 +63,87 @@ public class UserController {
 	}
 	
 	@GetMapping("/find-all-user")
-	public Object findAllUser(@RequestParam("p")Optional<Integer>p) {
-		Pageable pageable=PageRequest.of(p.orElse(0),5,Sort.by("id"));
-		Page<UserDto> users=service.findAllUser(pageable);
-		return ResponseHandler.getResponse(service.pagingFormat(users),HttpStatus.OK);
+	public Object findAllUser(@RequestParam("p")Optional<Integer>p, HttpServletRequest request) {
+		try {
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first ",HttpStatus.BAD_REQUEST);
+			
+			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to search all users details",HttpStatus.BAD_REQUEST);
+			
+			Pageable pageable=PageRequest.of(p.orElse(0),22,Sort.by("id"));
+			Page<UserDto> users=service.findAllUser(pageable);
+			return ResponseHandler.getResponse(service.pagingFormat(users),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PostMapping("/create-user")
-	public Object createNewUser(@Valid @RequestBody CreateUserDto dto,BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		User newUser= service.createUser(dto);
-		
-		return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
+	public Object createNewUser(@Valid @RequestBody CreateUserDto dto,BindingResult errors, HttpServletRequest request) {
+		try {
+			if(errors.hasErrors())
+				return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+			
+			else if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
+			
+			else if(service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN)) {
+				User newUser= service.createUser(dto);	
+				return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
+			}
+			
+			return ResponseHandler.getResponse("you're not allowed to create this user",HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PutMapping("/update-user")
-	public Object updateUser(@Valid @RequestBody UpdateUserDto dto,BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		User user=service.updateUser(dto);
-		
-		return ResponseHandler.getResponse(user,HttpStatus.OK);
+	public Object updateUser(@Valid @RequestBody UpdateUserDto dto,BindingResult errors,HttpServletRequest request) {
+		try {
+			if(errors.hasErrors())
+				return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+			
+			else if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first before update",HttpStatus.BAD_REQUEST);
+			
+			User currentUser=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			
+			if(currentUser.getRole().equals(Role.ADMIN) || currentUser.getId()==dto.getId()) {
+				User user=service.updateUser(dto);
+				return ResponseHandler.getResponse(user,HttpStatus.OK);
+			}
+			
+			return ResponseHandler.getResponse("you're not allowed to update this user",HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@DeleteMapping("/delete/{user-id}")
-	public Object deleteUser(@PathVariable("user-id")Long id) {
-		if(!service.isExistedId(id))
-			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
-		else if(service.getUserByUserId(id).getListedPost().size()>0)
-			return ResponseHandler.getResponse("Please delete all this user's hotels first before delete this user !",HttpStatus.BAD_REQUEST);
-		
-		service.deleteUser(id);
-		
-		return ResponseHandler.getResponse(HttpStatus.OK);
+	public Object deleteUser(@PathVariable("user-id")Long id,HttpServletRequest request) {
+		try {
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first before delete",HttpStatus.BAD_REQUEST);
+			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to delete this user",HttpStatus.BAD_REQUEST);
+				
+			else if(!service.isExistedId(id))
+				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+			
+			else if(service.getUserByUserId(id).getListedPost().size()>0)
+				return ResponseHandler.getResponse("Please delete all this user's hotels first before delete this user !",HttpStatus.BAD_REQUEST);
+			
+				service.deleteUser(id);
+				return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
+		}	
 	}
 	
 	@PostMapping("/add-hotel")
@@ -111,8 +157,7 @@ public class UserController {
 
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}
-	
-	
+		
 	@PostMapping("/remove-hotel")
 	public Object removeHotelFromFavouritePost(@Valid @RequestBody AddHotelDto dto,BindingResult errors,HttpServletRequest request) {
 		if(errors.hasErrors())
@@ -121,22 +166,36 @@ public class UserController {
 		User updateUser = service.removeHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 		
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
-  }
+	}
+	
 	@GetMapping("/get-user-details/{user-id}")
-	public Object getUserDetails(@PathVariable("user-id") Long id) {
-			
+	public Object getUserDetails(@PathVariable("user-id") Long id, HttpServletRequest request) {
 		try {
-			UserDto user=service.getUserDetails(id);
+			if(jwt.getJwtTokenFromRequest(request)==null)
+				return ResponseHandler.getResponse("please sign in first if you want to search for user details",HttpStatus.BAD_REQUEST);
 			
-			return ResponseHandler.getResponse(user,HttpStatus.OK);
+			User currentUser=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
+			if(id != currentUser.getId() && !currentUser.getRole().equals(Role.ADMIN))
+				return ResponseHandler.getResponse("you're not allowed to search this user details",HttpStatus.BAD_REQUEST);
+				
+			try {
+				UserDto user=service.getUserDetails(id);
+				
+				return ResponseHandler.getResponse(user,HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
 		}
-		return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
 	}
 	
 	@GetMapping("/current-user")
-	public Object getUserDetailsFromToken(HttpServletRequest request) {
+	public Object getCurrentUser(HttpServletRequest request) {
+		
+		
 		try {
 			String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
 			

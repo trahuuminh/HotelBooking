@@ -46,7 +46,7 @@ public class ReviewController {
 	
 	@GetMapping("/find-all-review")
 	public Object findAllReview(@RequestParam("p") Optional<Integer>p) {
-		Pageable pageable=PageRequest.of(p.orElse(0), 5,Sort.by("id"));
+		Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id"));
 		Page<ReviewDto> reviews=service.findAllReviewDto(pageable);
 		
 		return ResponseHandler.getResponse(service.pagingFormat(reviews),HttpStatus.OK);
