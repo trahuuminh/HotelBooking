@@ -27,9 +27,9 @@ public class UserImageServiceImpl implements UserImageService {
 
 	@Override
 	public UserImage createNewUserImage(CreateUserImageDto dto) {
-		UserImage userImage=new UserImage();
+		UserImage userImage = new UserImage();
 		
-		userImage.setPath(dto.getPath());
+		userImage.setName(dto.getName());
 		userImage.setUrl(dto.getUrl());
 		
 		return userImageRepo.save(userImage);
@@ -39,7 +39,7 @@ public class UserImageServiceImpl implements UserImageService {
 	public UserImage updateUserImage(UpdateUserImageDto dto) {
 		UserImage userImage=userImageRepo.getById(dto.getId());
 		
-		userImage.setPath(dto.getName());
+		userImage.setName(dto.getName());
 		userImage.setUrl(dto.getUrl());
 		
 		return userImageRepo.save(userImage);

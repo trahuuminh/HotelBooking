@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -34,7 +35,7 @@ public class StorageService {
 	public String uploadFile(MultipartFile file, String saveDir) {
 		File fileObj = convertMultiPartFileToFile(file);
 		String suffixImageName = saveDir.endsWith("/") ? saveDir : saveDir + "/";
-		String fileName = suffixImageName + System.currentTimeMillis()+"-"+file.getOriginalFilename();
+		String fileName = suffixImageName + System.currentTimeMillis()+"-"+file.getOriginalFilename().replaceAll("/", "_");
 		
 		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).withCannedAcl(CannedAccessControlList.PublicRead));
 		fileObj.delete();
@@ -51,7 +52,7 @@ public class StorageService {
 		try {
 			for(MultipartFile file: files) {
 				File fileObj = convertMultiPartFileToFile(file);
-				String fileName = suffixImageName + System.currentTimeMillis()+"-"+file.getOriginalFilename();
+				String fileName = suffixImageName + System.currentTimeMillis()+"-"+file.getOriginalFilename().replaceAll("/", "_");
 				s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).withCannedAcl(CannedAccessControlList.PublicRead));
 				fileObj.delete();
 				
@@ -77,9 +78,16 @@ public class StorageService {
 		return null;
 	}
 	
-	public String deleteFile(String fileName) {
-		s3Client.deleteObject(bucketName, fileName);
-		return fileName + " removed";
+	public boolean deleteFile(String fileName) {
+		try {
+			s3Client.deleteObject(bucketName, fileName);
+			return true;
+		} catch (AmazonServiceException e) {
+			e.printStackTrace();
+		} catch (SdkClientException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public File convertMultiPartFileToFile(MultipartFile file) {
