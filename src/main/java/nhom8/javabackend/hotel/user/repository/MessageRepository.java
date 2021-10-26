@@ -2,6 +2,8 @@ package nhom8.javabackend.hotel.user.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,4 +17,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 	
 	@Query("SELECT m.id FROM Message m JOIN m.agent a WHERE a.id = ?1 ")
 	List<Long>findAllMessageIdByAgentId(Long agentId);
+	
+	@Query("SELECT m FROM Message m JOIN m.agent a WHERE a.id = ?1")
+	Page<MessageDto> findAllMessageDtoByAgentId(Long agentId,Pageable pageable);
 }
