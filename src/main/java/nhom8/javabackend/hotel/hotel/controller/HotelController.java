@@ -158,7 +158,7 @@ public class HotelController {
 			Hotel hotel=service.getHotelByHotelId(hotelId);
 			
 			service.setHotelCoverPic(hotel, hotelImage);
-			return ResponseHandler.getResponse(HttpStatus.OK);
+			return ResponseHandler.getResponse(hotelImage,HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
@@ -203,7 +203,6 @@ public class HotelController {
 				CreateHotelImagesDto dto=new CreateHotelImagesDto(url + fileName,userDirectory + uploadDir + fileName,hotelId);
 				hotelImagesService.createNewHotelImages(dto);
 			}
-			
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
