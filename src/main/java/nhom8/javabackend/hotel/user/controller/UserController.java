@@ -64,21 +64,12 @@ public class UserController {
 	}
 	
 	@GetMapping("/find-all-user")
-	public Object findAllUser(@RequestParam("p")Optional<Integer>p, HttpServletRequest request) {
-		try {
-			if(jwt.getJwtTokenFromRequest(request)==null)
-				return ResponseHandler.getResponse("please sign in first ",HttpStatus.BAD_REQUEST);
-			
-			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
-				return ResponseHandler.getResponse("you're not allowed to search all users details",HttpStatus.BAD_REQUEST);
+	public Object findAllUser(@RequestParam("p")Optional<Integer>p) {
 			
 			Pageable pageable=PageRequest.of(p.orElse(0),22,Sort.by("id"));
 			Page<UserDto> users=service.findAllUser(pageable);
 			return ResponseHandler.getResponse(service.pagingFormat(users),HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
-		}
+		
 	}
 	
 	@PostMapping("/create-user")
@@ -171,27 +162,18 @@ public class UserController {
 	}
 	
 	@GetMapping("/get-user-details/{user-id}")
-	public Object getUserDetails(@PathVariable("user-id") Long id, HttpServletRequest request) {
-		try {
-			if(jwt.getJwtTokenFromRequest(request)==null)
-				return ResponseHandler.getResponse("please sign in first if you want to search for user details",HttpStatus.BAD_REQUEST);
-			
-			User currentUser=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
-			if(id != currentUser.getId() && !currentUser.getRole().equals(Role.ADMIN))
-				return ResponseHandler.getResponse("you're not allowed to search this user details",HttpStatus.BAD_REQUEST);
-				
+	public Object getUserDetails(@PathVariable("user-id") Long id) {
+			if(!service.isExistedId(id))
+				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+		
 			try {
 				UserDto user=service.getUserDetails(id);
 				
 				return ResponseHandler.getResponse(user,HttpStatus.OK);
 			} catch (Exception e) {
 				e.printStackTrace();
+				return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 			}
-			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	@GetMapping("/current-user")
