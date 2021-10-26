@@ -50,6 +50,7 @@ import nhom8.javabackend.hotel.user.util.Role;
 @RequestMapping("/api/user")
 public class UserController {
 	private final String uploadDir="/src/main/resources/static/user-images/";
+	private final String url="/static/user-images/";
 	private UserService service;
 	private JwtUtils jwt;
 	private UserImageService userImageService;
@@ -211,7 +212,7 @@ public class UserController {
 	public Object uploadUserProfilePic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {
 			Calendar date= Calendar.getInstance();
-			String fileName = file.getOriginalFilename()+"-"+date.getTimeInMillis();
+			String fileName = date.getTimeInMillis()+"-"+file.getOriginalFilename();
 			
 			String userDirectory=Paths.get("").toAbsolutePath().toString();
 			
@@ -224,7 +225,7 @@ public class UserController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
-			CreateUserImageDto dto=new CreateUserImageDto(userDirectory + uploadDir + fileName,fileName);
+			CreateUserImageDto dto=new CreateUserImageDto( url + fileName,fileName);
 			UserImage userImage=userImageService.createNewUserImage(dto);
 			
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
@@ -241,7 +242,7 @@ public class UserController {
 	public Object uploadUserCoverPic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {
 			Calendar date= Calendar.getInstance();
-			String fileName = file.getOriginalFilename()+"-"+date.getTimeInMillis();
+			String fileName =date.getTimeInMillis()+"-"+file.getOriginalFilename();
 			
 			String userDirectory=Paths.get("").toAbsolutePath().toString();
 			
@@ -254,7 +255,7 @@ public class UserController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
-			CreateUserImageDto dto=new CreateUserImageDto(userDirectory + uploadDir + fileName,fileName);
+			CreateUserImageDto dto=new CreateUserImageDto(url + fileName,fileName);
 			UserImage userImage=userImageService.createNewUserImage(dto);
 			
 			User user=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
