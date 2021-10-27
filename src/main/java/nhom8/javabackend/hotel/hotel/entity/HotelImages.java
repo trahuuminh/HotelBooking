@@ -36,4 +36,8 @@ public class HotelImages extends BaseEntity {
 	@JsonIgnore
 	@JoinColumn(name = "hotel_id", referencedColumnName = "id")
 	private Hotel hotel;
+	
+	public Long getHotelId() {
+		return this.hotel.getId();
+	}
 }

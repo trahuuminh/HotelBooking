@@ -102,7 +102,7 @@ public class HotelServiceImpl implements HotelService {
 		
 		hotel.getAgent().getListedPost().remove(hotel);
 		for(User user: hotel.getUsersFavourite()) {
-			user.removeHotel(hotel);
+			user.removeFavouriteHotel(hotel);
 		}
 		
 	}
@@ -133,5 +133,10 @@ public class HotelServiceImpl implements HotelService {
 	public Hotel setHotelCoverPic(Hotel hotel, HotelImages image) {
 		hotel.setCoverPic(image);
 		return repository.save(hotel);
+	}
+	
+	@Override
+	public HotelDto getHotelBySlugName(String slug) {
+		return repository.getOneBySlug(slug);
 	}
 }

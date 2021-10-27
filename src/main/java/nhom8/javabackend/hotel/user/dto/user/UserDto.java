@@ -3,7 +3,7 @@ package nhom8.javabackend.hotel.user.dto.user;
 import java.util.Set;
 
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
-import nhom8.javabackend.hotel.user.entity.UserImage;
+import nhom8.javabackend.hotel.user.dto.userimage.UserImageDto;
 import nhom8.javabackend.hotel.user.util.Role;
 
 public interface UserDto {
@@ -39,9 +39,9 @@ public interface UserDto {
 	
 	public String getPinterest();
 	
-	public UserImage getProfilePic();
+	public UserImageDto getProfilePic();
 	
-	public UserImage getCoverPic();
+	public UserImageDto getCoverPic();
 	
 	public Set<Hotel> getListedPost();
 	

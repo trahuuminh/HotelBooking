@@ -61,10 +61,16 @@ public class HotelController {
 
 	@GetMapping
 	public Object findAllHotels(@RequestParam("p") Optional<Integer> p) {
-		Pageable pageable= PageRequest.of(p.orElse(0), 22,Sort.by("id"));
+		Pageable pageable= PageRequest.of(p.orElse(0), 12,Sort.by("id"));
 		Page<HotelDto> hotels = service.findAllHotel(pageable);
 		return ResponseHandler.getResponse(service.pagingFormat(hotels), HttpStatus.OK);
 
+	}
+	
+	@GetMapping("/{slug}")
+	public Object findHotel(@PathVariable("slug") String slug) {
+		HotelDto hotels = service.getHotelBySlugName(slug);
+		return ResponseHandler.getResponse(hotels, HttpStatus.OK);
 	}
 
 	@PostMapping("/add-hotel")
@@ -72,7 +78,10 @@ public class HotelController {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		else if(jwt.getJwtTokenFromRequest(request)==null)
-			return ResponseHandler.getResponse("Please sign in first if you want to post your hotel",HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse("Please sign in first if you want to post your hotel", HttpStatus.BAD_REQUEST);
+		
+		HotelDto foundedHotel = service.getHotelBySlugName(dto.getSlug());
+		if(foundedHotel != null) return ResponseHandler.getResponse("Hotel's slug already existed.", HttpStatus.BAD_REQUEST);
 		
 		Hotel addedHotel = service.addNewHotel(dto,userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 

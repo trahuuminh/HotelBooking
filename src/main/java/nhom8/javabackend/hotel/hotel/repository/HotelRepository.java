@@ -22,4 +22,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>{
 
 	@Query("SELECT h.id FROM Hotel h JOIN h.agent a WHERE a.id = ?1 ")
 	List<Long>findAllHotelIdByAgentId(Long agentId);
+	
+	@Transactional(readOnly = true)
+	@Query("SELECT h FROM Hotel h WHERE h.slug = ?1")
+	HotelDto getOneBySlug(String slug);
 }

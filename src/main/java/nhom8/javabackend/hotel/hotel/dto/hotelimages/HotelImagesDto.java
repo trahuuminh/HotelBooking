@@ -1,6 +1,5 @@
 package nhom8.javabackend.hotel.hotel.dto.hotelimages;
 
-import nhom8.javabackend.hotel.hotel.entity.Hotel;
 
 public interface HotelImagesDto {
 	public Long getId();
@@ -9,5 +8,5 @@ public interface HotelImagesDto {
 	
 	public String getThumbUrl();
 	
-	public Hotel getHotel();
+	public Long getHotelId();
 }
