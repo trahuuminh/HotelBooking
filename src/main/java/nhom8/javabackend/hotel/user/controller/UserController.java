@@ -83,7 +83,7 @@ public class UserController {
 			
 			else if(service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN) || 
 					service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getCellNumber().equals("secretadmin")) {
-				UserDto newUser= service.createUser(dto);	
+				User newUser= service.createUser(dto);	
 				return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
 			}
 			
@@ -106,7 +106,7 @@ public class UserController {
 			User currentUser=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
 			
 			if(currentUser.getRole().equals(Role.ADMIN) || currentUser.getId()==dto.getId()) {
-				UserDto user=service.updateUser(dto);
+				User user=service.updateUser(dto);
 				return ResponseHandler.getResponse(user,HttpStatus.OK);
 			}
 			
@@ -147,7 +147,7 @@ public class UserController {
 		else if(jwt.getJwtTokenFromRequest(request)==null)
 			return ResponseHandler.getResponse("please sign in first if you want to add this hotel to your favourite hotel list",HttpStatus.BAD_REQUEST);
 		
-		UserDto updateUser = service.addFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
+		User updateUser = service.addFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}
@@ -157,7 +157,7 @@ public class UserController {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 		
-		UserDto updateUser = service.removeFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
+		User updateUser = service.removeFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
 		
 		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}

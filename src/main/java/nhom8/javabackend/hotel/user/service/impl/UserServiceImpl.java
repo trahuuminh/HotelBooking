@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto createUser(CreateUserDto dto) {
+	public User createUser(CreateUserDto dto) {
 		User user=new User();
 		
 		user.setRole(dto.getRole());
@@ -71,11 +71,11 @@ public class UserServiceImpl implements UserService {
 		user.setInstagram(dto.getInstagram());
 		user.setPinterest(dto.getPinterest());;
 		
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 
 	@Override
-	public UserDto updateUser(UpdateUserDto dto) {
+	public User updateUser(UpdateUserDto dto) {
 		User user=userRepo.getById(dto.getId());
 		
 		user.setFirstName(dto.getFirstName());
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 		user.setInstagram(dto.getInstagram());
 		user.setPinterest(dto.getPinterest());
 		
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 
 	@Override
@@ -131,21 +131,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto addFavouriteHotel(AddHotelDto dto, User user) {
+	public User addFavouriteHotel(AddHotelDto dto, User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
 		user.addFavouriteHotel(hotel);
 		
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 
 	@Override
-	public UserDto removeFavouriteHotel(@Valid AddHotelDto dto,User user) {
+	public User removeFavouriteHotel(@Valid AddHotelDto dto,User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
 		user.removeFavouriteHotel(hotel);
 		
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 	
 	@Transactional
@@ -188,15 +188,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto setUserProfilePic(User user, UserImage userImage) {
+	public User setUserProfilePic(User user, UserImage userImage) {
 		user.setProfilePic(userImage);
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 	
 	@Override
-	public UserDto setUserCoverPic(User user, UserImage userImage) {
+	public User setUserCoverPic(User user, UserImage userImage) {
 		user.setCoverPic(userImage);
-		return (UserDto) userRepo.save(user);
+		return userRepo.save(user);
 	}
 
 	@Override
