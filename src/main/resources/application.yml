@@ -1,8 +1,10 @@
+server:  port: 8080
+
 spring:
   datasource: 
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password: minhthichlag
+    password: 
   jpa:
     show-sql: true
     generate-ddl: true
@@ -29,3 +31,6 @@ cloud:
 application:
   bucket:
     name: hotel-duancuoikhoa
+    
+jwt:
+  secret: thisismysecrettoken

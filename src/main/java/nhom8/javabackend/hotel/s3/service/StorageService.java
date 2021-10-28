@@ -35,6 +35,7 @@ public class StorageService {
 	public String uploadFile(MultipartFile file, String saveDir) {
 		File fileObj = convertMultiPartFileToFile(file);
 		String suffixImageName = saveDir.endsWith("/") ? saveDir : saveDir + "/";
+		suffixImageName = suffixImageName.startsWith("/") ? suffixImageName.substring(1) : suffixImageName;
 		String fileName = suffixImageName + System.currentTimeMillis()+"-"+file.getOriginalFilename().replaceAll("/", "_");
 		
 		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).withCannedAcl(CannedAccessControlList.PublicRead));
