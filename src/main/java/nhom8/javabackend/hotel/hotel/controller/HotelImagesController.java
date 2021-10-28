@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesUploadDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
@@ -48,11 +48,11 @@ public class HotelImagesController {
 	}
 	
 	@PostMapping("/create-hotel-images")
-	public Object createNewHotelImages(@Valid @RequestBody CreateHotelImagesDto dto, BindingResult errors) {
+	public Object createNewHotelImages(@Valid @RequestBody CreateHotelCoverPicDto dto, BindingResult errors) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		HotelImages hotelImages=service.createNewHotelImages(dto);
+		HotelImages hotelImages=service.createNewHotelCoverPic(dto);
 		
 		return ResponseHandler.getResponse(hotelImages,HttpStatus.CREATED);
 	}
@@ -69,7 +69,7 @@ public class HotelImagesController {
 	
 	@DeleteMapping("/delete/{hotel-images-id}")
 	public Object deleteHotelImages(@PathVariable("hotel-images-id")Long id) {
-		service.deleteHotelImages(id);
+		service.deleteHotelCoverPic(id);
 		
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}

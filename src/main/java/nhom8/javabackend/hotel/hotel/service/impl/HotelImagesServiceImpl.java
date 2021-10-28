@@ -2,10 +2,9 @@ package nhom8.javabackend.hotel.hotel.service.impl;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
@@ -33,13 +32,11 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 
 
 	@Override
-	public HotelImages createNewHotelImages(CreateHotelImagesDto dto) {
+	public HotelImages createNewHotelCoverPic(CreateHotelCoverPicDto dto) {
 		HotelImages hotelImages=new HotelImages();
-		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		
 		hotelImages.setUrl(dto.getUrl());
 		hotelImages.setThumbUrl(dto.getThumbUrl());
-		hotelImages.setHotel(hotel);
 		
 		return hotelImagesRepo.save(hotelImages);
 	}
@@ -57,8 +54,20 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 	}
 
 	@Override
-	public void deleteHotelImages(Long id) {
+	public void deleteHotelCoverPic(Long id) {
 		hotelImagesRepo.deleteById(id);
+	}
+
+	@Override
+	public HotelImages createNewHotelImages(CreateHotelImagesDto dto) {
+		HotelImages hotelImages=new HotelImages();
+		Hotel hotel=hotelRepo.getById(dto.getHotelId());
+		
+		hotelImages.setUrl(dto.getUrl());
+		hotelImages.setThumbUrl(dto.getThumbUrl());
+		hotelImages.setHotel(hotel);
+		
+		return hotelImagesRepo.save(hotelImages);
 	}
 
 }

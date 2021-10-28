@@ -135,13 +135,13 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Set<Message> messages = new HashSet<Message>();
 	
-	public void addHotel(Hotel hotel) {
+	public void addFavouriteHotel(Hotel hotel) {
 		this.favouritePost.add(hotel);
 		hotel.getUsersFavourite().add(this);
 		
 	}
 	
-	public void removeHotel(Hotel hotel) {
+	public void removeFavouriteHotel(Hotel hotel) {
 		this.favouritePost.remove(hotel);
 		hotel.getUsersFavourite().remove(this);
 	}

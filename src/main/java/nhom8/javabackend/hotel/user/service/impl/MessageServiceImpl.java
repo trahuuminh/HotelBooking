@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import nhom8.javabackend.hotel.user.dto.message.CreateMessageDto;
 import nhom8.javabackend.hotel.user.dto.message.MessageDto;
+import nhom8.javabackend.hotel.user.dto.message.PagingFormatMessageDto;
 import nhom8.javabackend.hotel.user.dto.message.UpdateMessageDto;
 import nhom8.javabackend.hotel.user.entity.Message;
 import nhom8.javabackend.hotel.user.entity.User;
@@ -66,6 +69,23 @@ public class MessageServiceImpl implements MessageService{
 	@Override
 	public boolean isExistedId(Long id) {
 		return messageRepo.existsById(id);
+	}
+
+	@Override
+	public Page<MessageDto> findAllMessageDtoByAgentId(Long agentId, Pageable pageable) {
+		return messageRepo.findAllMessageDtoByAgentId(agentId, pageable);
+	}
+
+	@Override
+	public PagingFormatMessageDto pagingFormat(Page<MessageDto> page) {
+		PagingFormatMessageDto dto =new PagingFormatMessageDto();
+		
+		dto.setPageSize(page.getSize());
+		dto.setTotalRecordCount(page.getTotalElements());
+		dto.setPageNumber(page.getNumber());
+		dto.setRecords(page.toList());
+		
+		return dto;
 	}
 
 }

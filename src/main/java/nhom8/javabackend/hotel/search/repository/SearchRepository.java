@@ -3,6 +3,8 @@ package nhom8.javabackend.hotel.search.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,7 +39,7 @@ public interface SearchRepository extends JpaRepository<Hotel, Long>{
 			+ "AND (cast(h.price as int) <= :highPrice OR :highPrice IS NULL) "
 			+ "AND (am.guestRoom = :guestRoom OR :guestRoom IS NULL) "
 			+ "AND (am.bedRoom = :bedRoom OR :bedRoom IS NULL)")
-	List<HotelDto> findHotelByOption(@Param("keyword") Optional<String> keyword, 
+	Page<HotelDto> findHotelByOption(@Param("keyword") Optional<String> keyword, 
 									@Param("wifiAvailability") Optional<String> wifiAvailability, 
 									@Param("parkingAvailability") Optional<String> parkingAvailability, 
 									@Param("poolAvailability") Optional<String> poolAvailability, 
@@ -46,6 +48,7 @@ public interface SearchRepository extends JpaRepository<Hotel, Long>{
 									@Param("lowPrice") Optional<Integer> lowPrice, 
 									@Param("highPrice") Optional<Integer> highPrice, 
 									@Param("guestRoom") Optional<Integer> guestRoom, 
-									@Param("bedRoom") Optional<Integer> bedRoom);
+									@Param("bedRoom") Optional<Integer> bedRoom,
+									Pageable pageable);
 
 }

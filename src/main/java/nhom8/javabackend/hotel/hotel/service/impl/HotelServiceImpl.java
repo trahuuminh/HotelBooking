@@ -102,7 +102,7 @@ public class HotelServiceImpl implements HotelService {
 		
 		hotel.getAgent().getListedPost().remove(hotel);
 		for(User user: hotel.getUsersFavourite()) {
-			user.removeHotel(hotel);
+			user.removeFavouriteHotel(hotel);
 		}
 		
 	}

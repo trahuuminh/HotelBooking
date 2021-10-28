@@ -28,9 +28,9 @@ public interface UserService  {
 
 	boolean isExistedId(Long userId);
 
-	User addHotel(AddHotelDto dto, User user);
+	User addFavouriteHotel(AddHotelDto dto, User user);
 
-	User removeHotel(@Valid AddHotelDto dto,User user);
+	User removeFavouriteHotel(@Valid AddHotelDto dto,User user);
 	
 	UserDto getUserDtoByUsername(String username);
 	

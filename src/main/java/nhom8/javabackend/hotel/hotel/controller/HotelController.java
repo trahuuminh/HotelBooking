@@ -1,5 +1,6 @@
 package nhom8.javabackend.hotel.hotel.controller;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +31,7 @@ import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
@@ -47,6 +49,7 @@ public class HotelController {
 	private JwtUtils jwt;
 	private UserService userService;
 	private final String uploadDir="/src/main/resources/static/hotel-images/";
+	private final String url="/static/hotel-images/";
 	private HotelImagesService hotelImagesService;
 	
 	public HotelController(HotelService hotelService,UserService UserService,JwtUtils Jwt, HotelImagesService HotelImagesService) {
@@ -149,17 +152,61 @@ public class HotelController {
 			Path path = Paths.get(userDirectory + uploadDir + fileName);
 			
 			Files.write(path, file.getBytes());
-			CreateHotelImagesDto dto=new CreateHotelImagesDto(fileName,userDirectory + uploadDir + fileName,hotelId);
-			HotelImages hotelImage=hotelImagesService.createNewHotelImages(dto);
+			CreateHotelCoverPicDto dto=new CreateHotelCoverPicDto(url + fileName,userDirectory + uploadDir + fileName);
+			HotelImages hotelImage=hotelImagesService.createNewHotelCoverPic(dto);
 			
 			Hotel hotel=service.getHotelByHotelId(hotelId);
 			
 			service.setHotelCoverPic(hotel, hotelImage);
-			return ResponseHandler.getResponse(HttpStatus.OK);
+			return ResponseHandler.getResponse(hotelImage,HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
+	@DeleteMapping("/delete-hotel-cover-pic/{hotel-id}")
+	public Object deleteHotelCoverPic(@PathVariable("hotel-id")Long hotelId) {
+		try {
+			Hotel hotel=service.getHotelByHotelId(hotelId);
+			File file= new File(hotel.getCoverPic().getThumbUrl());
+			file.delete();
+			service.setHotelCoverPic(hotel, null);
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("Some things wrong !",HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/upload-hotel-images/{hotel-id}")
+	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files,@PathVariable("hotel-id")Long hotelId) {
+		if(!service.isExistedId(hotelId))
+			return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
+		
+		try {
+			Calendar date= Calendar.getInstance();
+			for(MultipartFile f:files) {
+				String fileName = date.getTimeInMillis()+"-"+f.getOriginalFilename();
+				
+				String userDirectory=Paths.get("").toAbsolutePath().toString();
+				
+				Path folderPath = Paths.get(userDirectory + uploadDir);
+				
+				if(!Files.exists(folderPath)) {
+					Files.createDirectories(folderPath);
+				}
+				
+				Path path = Paths.get(userDirectory + uploadDir + fileName);
+				
+				Files.write(path, f.getBytes());
+				CreateHotelImagesDto dto=new CreateHotelImagesDto(url + fileName,userDirectory + uploadDir + fileName,hotelId);
+				hotelImagesService.createNewHotelImages(dto);
+			}
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

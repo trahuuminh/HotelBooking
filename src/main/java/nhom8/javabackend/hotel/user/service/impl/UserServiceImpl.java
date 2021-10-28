@@ -131,19 +131,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User addHotel(AddHotelDto dto, User user) {
+	public User addFavouriteHotel(AddHotelDto dto, User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
-		user.addHotel(hotel);
+		user.addFavouriteHotel(hotel);
 		
 		return userRepo.save(user);
 	}
 
 	@Override
-	public User removeHotel(@Valid AddHotelDto dto,User user) {
+	public User removeFavouriteHotel(@Valid AddHotelDto dto,User user) {
 		Hotel hotel = hotelRepo.getById(dto.getHotelId());
 		
-		user.removeHotel(hotel);
+		user.removeFavouriteHotel(hotel);
 		
 		return userRepo.save(user);
 	}
