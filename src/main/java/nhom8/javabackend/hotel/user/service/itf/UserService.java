@@ -18,9 +18,9 @@ public interface UserService  {
 	
 	PagingFormatUserDto pagingFormat(Page<UserDto> page);
 	
-	UserDto createUser(CreateUserDto dto);
+	User createUser(CreateUserDto dto);
 	
-	UserDto updateUser(UpdateUserDto dto);
+	User updateUser(UpdateUserDto dto);
 	
 	UserDto getUserDetails(Long id);
 	
@@ -28,9 +28,9 @@ public interface UserService  {
 
 	boolean isExistedId(Long userId);
 
-	UserDto addFavouriteHotel(AddHotelDto dto, User user);
+	User addFavouriteHotel(AddHotelDto dto, User user);
 
-	UserDto removeFavouriteHotel(@Valid AddHotelDto dto,User user);
+	User removeFavouriteHotel(@Valid AddHotelDto dto,User user);
 	
 	UserDto getUserDtoByUsername(String username);
 	
@@ -38,9 +38,9 @@ public interface UserService  {
 	
 	User getUserByUsername(String username);
 	
-	UserDto setUserProfilePic(User user,UserImage userImage);
+	User setUserProfilePic(User user,UserImage userImage);
 	
-	UserDto setUserCoverPic(User user,UserImage userImage);
+	User setUserCoverPic(User user,UserImage userImage);
 	
 	User getUserByUserId(Long userId);
 	
