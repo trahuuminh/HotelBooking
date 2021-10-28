@@ -2,12 +2,12 @@ spring:
   datasource: 
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password: hieu949922
+    password: minhthichlag
   jpa:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   jackson:
     serialization:
       fail-on-empty-beans: false
