@@ -2,7 +2,7 @@ package nhom8.javabackend.hotel.user.dto.user;
 
 import java.util.Set;
 
-import nhom8.javabackend.hotel.hotel.entity.Hotel;
+import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.user.dto.userimage.UserImageDto;
 import nhom8.javabackend.hotel.user.util.Role;
 
@@ -43,9 +43,9 @@ public interface UserDto {
 	
 	public UserImageDto getCoverPic();
 	
-	public Set<Hotel> getListedPost();
+	public Set<HotelDto> getListedPost();
 	
-	public Set<Hotel> getFavouritePost();
+	public Set<HotelDto> getFavouritePost();
 	
 	
 }

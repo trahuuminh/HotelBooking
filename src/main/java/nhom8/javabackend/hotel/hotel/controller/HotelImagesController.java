@@ -1,8 +1,5 @@
 package nhom8.javabackend.hotel.hotel.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,14 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
-import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesUploadDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
@@ -32,7 +26,7 @@ import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
 @RequestMapping("/api/hotel-images")
 public class HotelImagesController {
 
-	private final String uploadDir="/src/main/resources/static/hotel-images/";
+	private final String imagesDir = "hotel-images/";
 	
 	private HotelImagesService service;
 	
@@ -48,11 +42,15 @@ public class HotelImagesController {
 	}
 	
 	@PostMapping("/create-hotel-images")
-	public Object createNewHotelImages(@Valid @RequestBody CreateHotelCoverPicDto dto, BindingResult errors) {
+	public Object createNewHotelImages(@Valid @RequestBody CreateHotelImagesDto dto, BindingResult errors) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		HotelImages hotelImages=service.createNewHotelCoverPic(dto);
+		if(dto.getUrl().lastIndexOf(imagesDir) == -1) 
+			return ResponseHandler.getResponse("Unvalid hotel image url", HttpStatus.BAD_REQUEST);
+			
+		dto.setThumbUrl(dto.getUrl().substring(dto.getUrl().lastIndexOf(imagesDir)));
+		HotelImages hotelImages = service.createNewHotelImages(dto);
 		
 		return ResponseHandler.getResponse(hotelImages,HttpStatus.CREATED);
 	}
@@ -62,42 +60,24 @@ public class HotelImagesController {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
-		HotelImages hotelImages=service.updateHotelImages(dto);
+		if(dto.getUrl().lastIndexOf(imagesDir) == -1) 
+			return ResponseHandler.getResponse("Unvalid hotel image url", HttpStatus.BAD_REQUEST);
+		
+		dto.setThumbUrl(dto.getUrl().substring(dto.getUrl().lastIndexOf(imagesDir)));
+		HotelImages hotelImages = service.updateHotelImages(dto);
 		
 		return ResponseHandler.getResponse(hotelImages,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/delete/{hotel-images-id}")
 	public Object deleteHotelImages(@PathVariable("hotel-images-id")Long id) {
-		service.deleteHotelCoverPic(id);
-		
-		return ResponseHandler.getResponse(HttpStatus.OK);
-	}
-	
-	@PostMapping("/upload")
-	public Object uploadFile(@RequestParam("file") MultipartFile file) {
 		try {
-			String fileName = file.getOriginalFilename();
-			
-			String userDirectory=Paths.get("").toAbsolutePath().toString();
-			
-			Path folderPath = Paths.get(userDirectory + uploadDir);
-			
-			if(!Files.exists(folderPath)) {
-				Files.createDirectories(folderPath);
-			}
-			
-			Path path = Paths.get(userDirectory + uploadDir + fileName);
-			
-			Files.write(path, file.getBytes());
-			HotelImagesUploadDto dto=new HotelImagesUploadDto();
-			dto.setUrl(uploadDir + fileName);
-			dto.setName(fileName);
-			
-			return ResponseHandler.getResponse(dto, HttpStatus.OK);
+			service.deleteHotelCoverPic(id);
+		
+			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(e,HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 }
