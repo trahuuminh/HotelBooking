@@ -1,4 +1,4 @@
-package Java11.HotelBooking;
+package nhom8.javabackend.hotel;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
