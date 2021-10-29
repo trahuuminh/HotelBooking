@@ -1,5 +1,7 @@
 package nhom8.javabackend.hotel.hotel.dto.hotelimages;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class CreateHotelCoverPicDto {
 
+	@NotNull
 	private String url;
 	
 	private String thumbUrl;

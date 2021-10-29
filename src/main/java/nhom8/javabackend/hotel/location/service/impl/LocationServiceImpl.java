@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nhom8.javabackend.hotel.location.dto.CreateLocationDto;
+import nhom8.javabackend.hotel.location.dto.ListOfCityDto;
 import nhom8.javabackend.hotel.location.dto.LocationDto;
 import nhom8.javabackend.hotel.location.dto.UpdateLocationDto;
 import nhom8.javabackend.hotel.location.entity.Location;
@@ -69,6 +70,11 @@ public class LocationServiceImpl implements LocationService {
 	public void deleteById(Long locationId) {
 		repository.deleteById(locationId);;
 
+	}
+
+	@Override
+	public List<ListOfCityDto> countHotelByLocationId() {
+		return repository.countHotelByLocationId();
 	}
 
 }
