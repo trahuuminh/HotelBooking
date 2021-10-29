@@ -23,7 +23,4 @@ public interface LocationDto {
 	
 	public int getNumberOfPost();
 	
-	public Long getCountHotel();
-	
-	
 }

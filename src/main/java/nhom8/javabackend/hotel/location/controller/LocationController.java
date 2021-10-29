@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.location.dto.CreateLocationDto;
+import nhom8.javabackend.hotel.location.dto.ListOfCityDto;
 import nhom8.javabackend.hotel.location.dto.LocationDto;
 import nhom8.javabackend.hotel.location.dto.UpdateLocationDto;
 import nhom8.javabackend.hotel.location.entity.Location;
@@ -35,6 +36,13 @@ public class LocationController {
 	public Object findAllLocation() {
 		List<LocationDto> locations = service.findAllDto();
 		return ResponseHandler.getResponse(locations, HttpStatus.OK);
+
+	}
+	
+	@GetMapping("/countHotel")
+	public Object countHotelByLocationId() {
+		List<ListOfCityDto> listOfCity = service.countHotelByLocationId();
+		return ResponseHandler.getResponse(listOfCity, HttpStatus.OK);
 
 	}
 
