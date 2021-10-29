@@ -78,20 +78,20 @@ public class UserServiceImpl implements UserService {
 	public User updateUser(UpdateUserDto dto) {
 		User user=userRepo.getById(dto.getId());
 		
-		user.setFirstName(dto.getFirstName());
-		user.setLastName(dto.getLastName());
-		user.setPassword(encode.encode(dto.getPassword()));
-		user.setEmail(dto.getEmail());
-		user.setCellNumber(dto.getCellNumber());
-		user.setDateOfBirth(dto.getDateOfBirth());
-		user.setGender(dto.getGender());
-		user.setContent(dto.getContent());
-		user.setLanguage(dto.getLanguage());
-		user.setFacebook(dto.getFacebook());
-		user.setTwitter(dto.getTwitter());
-		user.setLinkedin(dto.getLinkedin());
-		user.setInstagram(dto.getInstagram());
-		user.setPinterest(dto.getPinterest());
+		if(dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+		if(dto.getLastName() != null) user.setLastName(dto.getLastName());
+		if(dto.getPassword() != null) user.setPassword(encode.encode(dto.getPassword()));
+		if(dto.getEmail() != null) user.setEmail(dto.getEmail());
+		if(dto.getCellNumber() != null) user.setCellNumber(dto.getCellNumber());
+		if(dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
+		if(dto.getGender() != null) user.setGender(dto.getGender());
+		if(dto.getContent() != null) user.setContent(dto.getContent());
+		if(dto.getLanguage() != null) user.setLanguage(dto.getLanguage());
+		if(dto.getFacebook() != null) user.setFacebook(dto.getFacebook());
+		if(dto.getTwitter() != null) user.setTwitter(dto.getTwitter());
+		if(dto.getLinkedin() != null) user.setLinkedin(dto.getLinkedin());
+		if(dto.getInstagram() != null) user.setInstagram(dto.getInstagram());
+		if(dto.getPinterest() != null) user.setPinterest(dto.getPinterest());
 		
 		return userRepo.save(user);
 	}
