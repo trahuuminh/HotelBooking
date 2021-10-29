@@ -22,4 +22,5 @@ public interface LocationDto {
 	public String getCountryShort();
 	
 	public int getNumberOfPost();
+	
 }
