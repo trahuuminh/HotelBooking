@@ -20,9 +20,9 @@ public interface LocationRepository extends JpaRepository<Location, Long>{
 
 	
 	@Transactional(readOnly = true)
-	@Query("SELECT l.id as id, l.city as city, COUNT(h.location) as numberOfHotel "
+	@Query("SELECT l.city as city, COUNT(h.id) as numberOfHotel "
 			+ "FROM Location l LEFT JOIN Hotel h ON h.location = l.id "
-			+ "GROUP BY l.id")
+			+ "GROUP BY l.city")
 	List<ListOfCityDto> countHotelByLocationId();
 
 	
