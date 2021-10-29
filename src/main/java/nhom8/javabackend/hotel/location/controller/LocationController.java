@@ -26,11 +26,11 @@ import nhom8.javabackend.hotel.location.service.itf.LocationService;
 @RequestMapping("/api/location")
 public class LocationController {
 	private LocationService service;
-	
+
 	public LocationController(LocationService locationService) {
 		service = locationService;
 	}
-	
+
 	@GetMapping
 	public Object findAllLocation() {
 		List<LocationDto> locations = service.findAllDto();
