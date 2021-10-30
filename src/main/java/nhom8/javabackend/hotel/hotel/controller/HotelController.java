@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
-import nhom8.javabackend.hotel.hotel.dto.FindHotelByMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;

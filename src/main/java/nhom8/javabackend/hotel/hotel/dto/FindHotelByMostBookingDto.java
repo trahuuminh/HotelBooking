@@ -28,7 +28,7 @@ public interface FindHotelByMostBookingDto {
 
 	public String getCondition();
 
-	public int getRating();
+	public float getRating();
 
 	public int getRatingCount();
 

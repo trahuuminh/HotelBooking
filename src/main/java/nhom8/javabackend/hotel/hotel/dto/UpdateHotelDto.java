@@ -29,7 +29,7 @@ public class UpdateHotelDto {
 
 	private String condition;
 
-	private int rating;
+	private float rating;
 
 	private int ratingCount;
 
