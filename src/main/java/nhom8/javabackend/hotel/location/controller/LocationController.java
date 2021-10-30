@@ -51,9 +51,14 @@ public class LocationController {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 
-		Location addedLocation = service.addNewLocation(dto);
+		try {
+			Location addedLocation = service.addNewLocation(dto);
 
-		return ResponseHandler.getResponse(addedLocation, HttpStatus.CREATED);
+			return ResponseHandler.getResponse(addedLocation, HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse("This location is already exist",HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@PutMapping("/update-location")

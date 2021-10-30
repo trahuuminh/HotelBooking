@@ -39,4 +39,5 @@ public interface HotelService {
 	PagingFormatHotelMostBookingDto pagingFormatHotelMostBooking(Page<FindHotelByMostBookingDto> page);
 
 	Page<FindHotelByMostBookingDto> FindHotelByMostBooking(Pageable pageable);
+
 }

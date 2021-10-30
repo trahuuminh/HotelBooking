@@ -1,10 +1,6 @@
 package nhom8.javabackend.hotel.hotel.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +35,7 @@ import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelImagesService;
 import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
+import nhom8.javabackend.hotel.s3.service.StorageService;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.UserService;
@@ -46,18 +44,23 @@ import nhom8.javabackend.hotel.user.util.Role;
 @RestController
 @RequestMapping("/api/hotel")
 public class HotelController {
+	private final String imagesDir = "hotel-images/";
 	private HotelService service;
 	private JwtUtils jwt;
 	private UserService userService;
-	private final String uploadDir="/src/main/resources/static/hotel-images/";
-	private final String url="/static/hotel-images/";
 	private HotelImagesService hotelImagesService;
+	private StorageService storageService;
 	
-	public HotelController(HotelService hotelService,UserService UserService,JwtUtils Jwt, HotelImagesService HotelImagesService) {
+	public HotelController(HotelService hotelService,
+							UserService UserService,
+							JwtUtils Jwt, 
+							HotelImagesService HotelImagesService,
+							StorageService s3Storage) {
 		service = hotelService;
 		jwt=Jwt;
 		userService = UserService;
-		hotelImagesService=HotelImagesService;
+		hotelImagesService = HotelImagesService;
+		storageService = s3Storage;
 	}
 
 	@GetMapping
@@ -144,27 +147,14 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-cover-pic/{hotel-id}")
-	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file,@PathVariable("hotel-id")Long hotelId) {
+	@PostMapping("/upload-hotel-cover-pic")
+	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file, @RequestPart("hotelId") Long hotelId) {
 		try {
-			Calendar date= Calendar.getInstance();
-			String fileName = date.getTimeInMillis()+"-"+file.getOriginalFilename();
+			String url = storageService.uploadFile(file, imagesDir);
+			CreateHotelCoverPicDto dto = new CreateHotelCoverPicDto(url, url.substring(url.lastIndexOf(imagesDir)));
+			HotelImages hotelImage = hotelImagesService.createNewHotelCoverPic(dto);
 			
-			String userDirectory=Paths.get("").toAbsolutePath().toString();
-			
-			Path folderPath = Paths.get(userDirectory + uploadDir);
-			
-			if(!Files.exists(folderPath)) {
-				Files.createDirectories(folderPath);
-			}
-			
-			Path path = Paths.get(userDirectory + uploadDir + fileName);
-			
-			Files.write(path, file.getBytes());
-			CreateHotelCoverPicDto dto=new CreateHotelCoverPicDto(url + fileName,userDirectory + uploadDir + fileName);
-			HotelImages hotelImage=hotelImagesService.createNewHotelCoverPic(dto);
-			
-			Hotel hotel=service.getHotelByHotelId(hotelId);
+			Hotel hotel = service.getHotelByHotelId(hotelId);
 			
 			service.setHotelCoverPic(hotel, hotelImage);
 			return ResponseHandler.getResponse(hotelImage,HttpStatus.OK);
@@ -177,10 +167,15 @@ public class HotelController {
 	@DeleteMapping("/delete-hotel-cover-pic/{hotel-id}")
 	public Object deleteHotelCoverPic(@PathVariable("hotel-id")Long hotelId) {
 		try {
-			Hotel hotel=service.getHotelByHotelId(hotelId);
-			File file= new File(hotel.getCoverPic().getThumbUrl());
-			file.delete();
-			service.setHotelCoverPic(hotel, null);
+			Hotel hotel = service.getHotelByHotelId(hotelId);
+			HotelImages hotelCoverPic = hotel.getCoverPic();
+			
+			if(storageService.deleteFile(hotelCoverPic.getThumbUrl())) {
+				service.setHotelCoverPic(hotel, null);
+				hotelImagesService.deleteHotelCoverPic(hotelId);
+			}
+			
+			
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,34 +183,34 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-images/{hotel-id}")
-	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files,@PathVariable("hotel-id")Long hotelId) {
+	@PostMapping("/upload-hotel-images")
+	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files, @RequestPart("hotelId") Long hotelId) {
 		if(!service.isExistedId(hotelId))
 			return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
 		
 		try {
-			Calendar date= Calendar.getInstance();
-			for(MultipartFile f:files) {
-				String fileName = date.getTimeInMillis()+"-"+f.getOriginalFilename();
+			List<String> listUrls = storageService.uploadListOfFiles(files, imagesDir);
+			
+			for(String url : listUrls) {
+				CreateHotelImagesDto dto = new CreateHotelImagesDto(url,
+						url.substring(url.lastIndexOf(imagesDir)),
+						hotelId);
 				
-				String userDirectory=Paths.get("").toAbsolutePath().toString();
-				
-				Path folderPath = Paths.get(userDirectory + uploadDir);
-				
-				if(!Files.exists(folderPath)) {
-					Files.createDirectories(folderPath);
-				}
-				
-				Path path = Paths.get(userDirectory + uploadDir + fileName);
-				
-				Files.write(path, f.getBytes());
-				CreateHotelImagesDto dto=new CreateHotelImagesDto(url + fileName,userDirectory + uploadDir + fileName,hotelId);
 				hotelImagesService.createNewHotelImages(dto);
 			}
+
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@GetMapping("/best-rated-hotel")
+	public Object getBestHotels(@RequestParam("page")Optional<Integer> page ) {
+		
+		Pageable pageable= PageRequest.of(page.orElse(0), 12,Sort.by("rating").descending());
+		Page<HotelDto> hotels=service.findAllHotel(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(hotels),HttpStatus.OK);
 	}
 }

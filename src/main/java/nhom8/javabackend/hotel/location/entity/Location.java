@@ -1,5 +1,6 @@
 package nhom8.javabackend.hotel.location.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -21,14 +22,15 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 @Table(name = "location")
 public class Location extends BaseEntity {
 	
-	private int lat;
+	private float lat;
 	
-	private int lng;
+	private float lng;
 	
 	private String formattedAddress;
 	
 	private String zipcode;
 	
+	@Column(unique = true)
 	private String city;
 	
 	private String stateLong;

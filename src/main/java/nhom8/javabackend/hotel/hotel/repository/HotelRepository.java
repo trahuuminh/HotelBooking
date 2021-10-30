@@ -38,4 +38,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>{
 			+ "h.coverPic as coverPic "
 			+ "FROM Hotel h LEFT JOIN Booking b ON b.hotel = h.id ")
 	Page<FindHotelByMostBookingDto> FindHotelByMostBooking(Pageable pageable);
+
 }
