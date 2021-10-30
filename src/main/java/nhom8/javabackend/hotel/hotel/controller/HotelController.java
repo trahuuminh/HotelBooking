@@ -80,8 +80,8 @@ public class HotelController {
 	@GetMapping("/FindHotelByMostBooking")
 	public Object FindHotelByMostBooking(@RequestParam("p") Optional<Integer> p) {
 		Pageable pageable= PageRequest.of(p.orElse(0), 12);
-		Page<FindHotelByMostBookingDto> hotels = service.FindHotelByMostBooking(pageable);
-		return ResponseHandler.getResponse(service.pagingFormatHotelMostBooking(hotels), HttpStatus.OK);
+		Page<HotelDto> hotels = service.FindHotelByMostBooking(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(hotels), HttpStatus.OK);
 
 	}
 

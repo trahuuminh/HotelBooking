@@ -36,7 +36,6 @@ public interface HotelService {
 
 	HotelDto getHotelBySlugName(String slug);
 
-	PagingFormatHotelMostBookingDto pagingFormatHotelMostBooking(Page<FindHotelByMostBookingDto> page);
+	Page<HotelDto> FindHotelByMostBooking(Pageable pageable);
 
-	Page<FindHotelByMostBookingDto> FindHotelByMostBooking(Pageable pageable);
 }
