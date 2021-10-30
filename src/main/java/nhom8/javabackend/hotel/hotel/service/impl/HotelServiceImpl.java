@@ -48,7 +48,7 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Page<FindHotelByMostBookingDto> FindHotelByMostBooking(Pageable pageable) {
+	public Page<HotelDto> FindHotelByMostBooking(Pageable pageable) {
 		return repository.FindHotelByMostBooking(pageable);
 	}
 
@@ -122,18 +122,6 @@ public class HotelServiceImpl implements HotelService {
 	@Override
 	public PagingFormatHotelDto pagingFormat(Page<HotelDto> page) {
 		PagingFormatHotelDto dto = new PagingFormatHotelDto();
-
-		dto.setPageSize(page.getSize());
-		dto.setTotalRecordCount(page.getTotalElements());
-		dto.setPageNumber(page.getNumber());
-		dto.setRecords(page.toList());
-
-		return dto;
-	}
-
-	@Override
-	public PagingFormatHotelMostBookingDto pagingFormatHotelMostBooking(Page<FindHotelByMostBookingDto> page) {
-		PagingFormatHotelMostBookingDto dto = new PagingFormatHotelMostBookingDto();
 
 		dto.setPageSize(page.getSize());
 		dto.setTotalRecordCount(page.getTotalElements());

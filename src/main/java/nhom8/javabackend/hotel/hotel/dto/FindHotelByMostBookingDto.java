@@ -12,6 +12,7 @@ import nhom8.javabackend.hotel.user.entity.User;
 public interface FindHotelByMostBookingDto {
 	public Long getId();
 	
+	public int getNumberOfBooking();
 
 	public String getTitle();
 
@@ -41,8 +42,10 @@ public interface FindHotelByMostBookingDto {
 
 	public Location getLocation();
 	
+	public Set<HotelImagesDto> getImages();
 	
 	public HotelImagesDto getCoverPic();
-	
+
+	public Set<Review> getReviews();
 
 }
