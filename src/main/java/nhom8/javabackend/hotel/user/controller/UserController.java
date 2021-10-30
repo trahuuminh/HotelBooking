@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +45,7 @@ import nhom8.javabackend.hotel.user.util.Role;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(methods = {RequestMethod.PUT,RequestMethod.DELETE,RequestMethod.GET,RequestMethod.POST}, origins = "*", allowedHeaders = "*")
 public class UserController {
 	private final String imagesDir = "user-images/";
 	private UserService service;
@@ -193,6 +196,9 @@ public class UserController {
 	
 	@PostMapping("/upload-user-profile-pic")
 	public Object uploadUserProfilePic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+		
+		if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
 		try {
 			String url = storageService.uploadFile(file, imagesDir);
 			CreateUserImageDto dto = new CreateUserImageDto();
@@ -203,7 +209,7 @@ public class UserController {
 			
 			User user = service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
 			
-			return ResponseHandler.getResponse(service.setUserProfilePic(user, userImage), HttpStatus.OK);
+			return ResponseHandler.getResponse(service.setUserProfilePic(user, userImage).getProfilePic(), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
@@ -212,6 +218,9 @@ public class UserController {
 	
 	@PostMapping("/upload-user-cover-pic")
 	public Object uploadUserCoverPic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+
+		if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
 		try {
 //			Calendar date= Calendar.getInstance();
 //			String fileName =date.getTimeInMillis()+"-"+file.getOriginalFilename();
@@ -237,7 +246,7 @@ public class UserController {
 			
 			User user = service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
 			
-			return ResponseHandler.getResponse(service.setUserCoverPic(user, userImage), HttpStatus.OK);
+			return ResponseHandler.getResponse(service.setUserCoverPic(user, userImage).getCoverPic(), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
