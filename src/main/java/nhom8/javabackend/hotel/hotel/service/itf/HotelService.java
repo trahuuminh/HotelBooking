@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.FindHotelByMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
@@ -33,5 +35,7 @@ public interface HotelService {
 	Hotel setHotelCoverPic(Hotel hotel,HotelImages image);
 
 	HotelDto getHotelBySlugName(String slug);
-	
+
+	Page<HotelDto> FindHotelByMostBooking(Pageable pageable);
+
 }

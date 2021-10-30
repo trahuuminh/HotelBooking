@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.FindHotelByMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
@@ -74,6 +75,14 @@ public class HotelController {
 	public Object findHotel(@PathVariable("slug") String slug) {
 		HotelDto hotels = service.getHotelBySlugName(slug);
 		return ResponseHandler.getResponse(hotels, HttpStatus.OK);
+	}
+	
+	@GetMapping("/FindHotelByMostBooking")
+	public Object FindHotelByMostBooking(@RequestParam("p") Optional<Integer> p) {
+		Pageable pageable= PageRequest.of(p.orElse(0), 12);
+		Page<HotelDto> hotels = service.FindHotelByMostBooking(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(hotels), HttpStatus.OK);
+
 	}
 
 	@PostMapping("/add-hotel")

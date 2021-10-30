@@ -27,4 +27,11 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>{
 	@Query("SELECT h FROM Hotel h WHERE h.slug = ?1")
 	HotelDto getOneBySlug(String slug);
 	
+	@Transactional(readOnly = true)
+	@Query("SELECT h "
+			+ "FROM Hotel h LEFT JOIN Booking b ON b.hotel = h.id "
+			+ "GROUP BY h.id "
+			+ "ORDER BY COUNT(b.hotel) DESC")
+	Page<HotelDto> FindHotelByMostBooking(Pageable pageable);
+
 }
