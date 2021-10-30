@@ -33,9 +33,6 @@ public class CreateHotelDto {
 	private String condition;
 
 	@NotNull
-	private int rating;
-
-	@NotNull
 	private int ratingCount;
 
 	@NotNull

@@ -22,9 +22,9 @@ import nhom8.javabackend.hotel.common.entity.BaseEntity;
 @Table(name = "location")
 public class Location extends BaseEntity {
 	
-	private int lat;
+	private float lat;
 	
-	private int lng;
+	private float lng;
 	
 	private String formattedAddress;
 	

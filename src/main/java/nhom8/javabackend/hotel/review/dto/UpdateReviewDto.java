@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import nhom8.javabackend.hotel.review.validation.annotation.ExistReviewId;
+import nhom8.javabackend.hotel.review.validation.annotation.Rating;
 
 @Data
 public class UpdateReviewDto {
@@ -20,11 +21,15 @@ public class UpdateReviewDto {
 	
 	private LocalDateTime reviewDate;
 	
+	@Rating
 	private int serviceRating;
 	
+	@Rating
 	private int roomRating;
 	
+	@Rating
 	private int CleannessRating;
 	
+	@Rating
 	private int foodRating;
 }

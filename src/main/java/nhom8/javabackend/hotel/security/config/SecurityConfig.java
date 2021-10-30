@@ -1,5 +1,7 @@
 package nhom8.javabackend.hotel.security.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+		
+		http.cors().configurationSource(request -> configuration.applyPermitDefaultValues());
 		
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
@@ -57,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		
 		http.antMatcher("/api/**").authorizeRequests()
-			.antMatchers("/api/auth/login").permitAll()
+			.antMatchers("/api/auth/**").permitAll()
 			.antMatchers("/api/**").permitAll()
 			.anyRequest().authenticated();
 		

@@ -33,4 +33,7 @@ public interface HotelService {
 	Hotel setHotelCoverPic(Hotel hotel,HotelImages image);
 
 	HotelDto getHotelBySlugName(String slug);
+
+	Page<HotelDto> FindHotelByMostBooking(Pageable pageable);
+
 }

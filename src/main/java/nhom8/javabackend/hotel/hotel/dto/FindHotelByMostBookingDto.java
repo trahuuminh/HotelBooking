@@ -6,11 +6,13 @@ import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.util.Status;
 import nhom8.javabackend.hotel.location.entity.Location;
-import nhom8.javabackend.hotel.review.dto.SimpleReviewDto;
+import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.user.entity.User;
 
-public interface HotelDto {
+public interface FindHotelByMostBookingDto {
 	public Long getId();
+	
+	public int getNumberOfBooking();
 
 	public String getTitle();
 
@@ -38,12 +40,12 @@ public interface HotelDto {
 
 	public Amenities getAmenities();
 
+	public Location getLocation();
+	
 	public Set<HotelImagesDto> getImages();
 	
 	public HotelImagesDto getCoverPic();
 
-	public Location getLocation();
+	public Set<Review> getReviews();
 
-	public Set<SimpleReviewDto> getReviews();
-	
 }

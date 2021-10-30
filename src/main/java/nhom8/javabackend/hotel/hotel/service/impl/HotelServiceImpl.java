@@ -31,13 +31,13 @@ public class HotelServiceImpl implements HotelService {
 	private AmenitiesRepository amenRepo;
 	private LocationRepository LocRepo;
 	private ReviewRepository reviewRepo;
-	
-	public HotelServiceImpl(HotelRepository hotelRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
-			, ReviewRepository reviewRepository ) {
+
+	public HotelServiceImpl(HotelRepository hotelRepository, AmenitiesRepository amenitieRepo,
+			LocationRepository locationRepo, ReviewRepository reviewRepository) {
 		repository = hotelRepository;
-		amenRepo=amenitieRepo;
-		LocRepo=locationRepo;
-		reviewRepo=reviewRepository;
+		amenRepo = amenitieRepo;
+		LocRepo = locationRepo;
+		reviewRepo = reviewRepository;
 	}
 
 	@Override
@@ -46,9 +46,14 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Hotel addNewHotel(@Valid CreateHotelDto dto,User agent) {
-		Amenities amen=amenRepo.getById(dto.getAmenitiesId());
-		Location loc=LocRepo.getById(dto.getLocationId());
+	public Page<HotelDto> FindHotelByMostBooking(Pageable pageable) {
+		return repository.FindHotelByMostBooking(pageable);
+	}
+
+	@Override
+	public Hotel addNewHotel(@Valid CreateHotelDto dto, User agent) {
+		Amenities amen = amenRepo.getById(dto.getAmenitiesId());
+		Location loc = LocRepo.getById(dto.getLocationId());
 		Hotel newHotel = new Hotel();
 
 		newHotel.setTitle(dto.getTitle());
@@ -57,15 +62,15 @@ public class HotelServiceImpl implements HotelService {
 		newHotel.setStatus(dto.getStatus());
 		newHotel.setPrice(dto.getPrice());
 		newHotel.setNegotiable(dto.isNegotiable());
+		newHotel.setRating(0);
 		newHotel.setCondition(dto.getCondition());
-		newHotel.setRating(dto.getRating());
-		newHotel.setRatingCount(dto.getRatingCount());
+		newHotel.setRatingCount(0);
 		newHotel.setContactNumber(dto.getContactNumber());
 		newHotel.setTermsAndCondition(dto.getTermsAndCondition());
 		newHotel.setAgent(agent);
 		newHotel.setAmenities(amen);
 		newHotel.setLocation(loc);
-		
+
 		return repository.save(newHotel);
 	}
 
@@ -81,7 +86,6 @@ public class HotelServiceImpl implements HotelService {
 		updateHotel.setPrice(dto.getPrice());
 		updateHotel.setNegotiable(dto.isNegotiable());
 		updateHotel.setCondition(dto.getCondition());
-		updateHotel.setRating(dto.getRating());
 		updateHotel.setRatingCount(dto.getRatingCount());
 		updateHotel.setContactNumber(dto.getContactNumber());
 		updateHotel.setTermsAndCondition(dto.getTermsAndCondition());
@@ -91,20 +95,21 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
-		
-		Hotel hotel=repository.getById(hotelId);
-		
-		for(Review r: hotel.getReviews()) {
+
+		Hotel hotel = repository.getById(hotelId);
+
+		for (Review r : hotel.getReviews()) {
 			r.setAuthor(null);
 			r.setHotel(null);
 			reviewRepo.save(r);
 		}
-		
+
 		hotel.getAgent().getListedPost().remove(hotel);
+
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeFavouriteHotel(hotel);
 		}
-		
+
 	}
 
 	@Override
@@ -114,13 +119,13 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public PagingFormatHotelDto pagingFormat(Page<HotelDto> page) {
-		PagingFormatHotelDto dto=new PagingFormatHotelDto();
-		
+		PagingFormatHotelDto dto = new PagingFormatHotelDto();
+
 		dto.setPageSize(page.getSize());
 		dto.setTotalRecordCount(page.getTotalElements());
 		dto.setPageNumber(page.getNumber());
 		dto.setRecords(page.toList());
-		
+
 		return dto;
 	}
 
@@ -134,9 +139,10 @@ public class HotelServiceImpl implements HotelService {
 		hotel.setCoverPic(image);
 		return repository.save(hotel);
 	}
-	
+
 	@Override
 	public HotelDto getHotelBySlugName(String slug) {
 		return repository.getOneBySlug(slug);
 	}
+
 }

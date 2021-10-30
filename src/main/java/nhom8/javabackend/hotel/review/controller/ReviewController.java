@@ -54,7 +54,7 @@ public class ReviewController {
 			else if(!userService.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
 				return ResponseHandler.getResponse("you're not allowed to search all reviews",HttpStatus.BAD_REQUEST);
 			
-			Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id"));
+			Pageable pageable=PageRequest.of(p.orElse(0), 22,Sort.by("id").descending());
 			Page<ReviewDto> reviews=service.findAllReviewDto(pageable);
 			
 			return ResponseHandler.getResponse(service.pagingFormat(reviews),HttpStatus.OK);

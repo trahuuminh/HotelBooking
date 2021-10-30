@@ -59,7 +59,7 @@ public class Hotel extends BaseEntity {
 	private String condition;
 	
 	@NotNull
-	private int rating;
+	private float rating ;
 	
 	@NotNull
 	private int ratingCount;
@@ -111,4 +111,5 @@ public class Hotel extends BaseEntity {
 		this.usersFavourite.remove(user);
 		user.getFavouritePost().remove(this);
 	}
+
 }

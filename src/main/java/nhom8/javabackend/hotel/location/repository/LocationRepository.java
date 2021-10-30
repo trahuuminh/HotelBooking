@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import nhom8.javabackend.hotel.location.dto.ListOfCityDto;
 import nhom8.javabackend.hotel.location.dto.LocationDto;
 import nhom8.javabackend.hotel.location.entity.Location;
 
@@ -17,4 +18,14 @@ public interface LocationRepository extends JpaRepository<Location, Long>{
 	@Query("SELECT l FROM Location l")
 	List<LocationDto> findAllDto();
 
+	
+	@Transactional(readOnly = true)
+	@Query("SELECT l.city as city, COUNT(h.id) as numberOfHotel "
+			+ "FROM Location l LEFT JOIN Hotel h ON h.location = l.id "
+			+ "GROUP BY l.city")
+	List<ListOfCityDto> countHotelByLocationId();
+
+	
+
 }
+
