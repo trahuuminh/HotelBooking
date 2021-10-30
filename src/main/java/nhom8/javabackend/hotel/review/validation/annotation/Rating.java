@@ -9,13 +9,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import nhom8.javabackend.hotel.review.validation.validator.ExistReviewIdValidator;
+import nhom8.javabackend.hotel.review.validation.validator.RatingValidator;
 
-@Constraint(validatedBy = ExistReviewIdValidator.class)
+@Constraint(validatedBy = RatingValidator.class)
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface ExistReviewId {
-	public String message() default "Review doesn't exist";
+public @interface Rating {
+	public String message() default "Review Values must be between 1 to 5";
 	
 	Class<?>[] groups() default { };
 

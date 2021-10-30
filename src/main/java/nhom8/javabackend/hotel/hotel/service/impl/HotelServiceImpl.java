@@ -57,9 +57,9 @@ public class HotelServiceImpl implements HotelService {
 		newHotel.setStatus(dto.getStatus());
 		newHotel.setPrice(dto.getPrice());
 		newHotel.setNegotiable(dto.isNegotiable());
+		newHotel.setRating(0);
 		newHotel.setCondition(dto.getCondition());
-		newHotel.setRating(dto.getRating());
-		newHotel.setRatingCount(dto.getRatingCount());
+		newHotel.setRatingCount(0);
 		newHotel.setContactNumber(dto.getContactNumber());
 		newHotel.setTermsAndCondition(dto.getTermsAndCondition());
 		newHotel.setAgent(agent);
@@ -81,7 +81,6 @@ public class HotelServiceImpl implements HotelService {
 		updateHotel.setPrice(dto.getPrice());
 		updateHotel.setNegotiable(dto.isNegotiable());
 		updateHotel.setCondition(dto.getCondition());
-		updateHotel.setRating(dto.getRating());
 		updateHotel.setRatingCount(dto.getRatingCount());
 		updateHotel.setContactNumber(dto.getContactNumber());
 		updateHotel.setTermsAndCondition(dto.getTermsAndCondition());
@@ -139,4 +138,5 @@ public class HotelServiceImpl implements HotelService {
 	public HotelDto getHotelBySlugName(String slug) {
 		return repository.getOneBySlug(slug);
 	}
+
 }

@@ -196,4 +196,12 @@ public class HotelController {
 			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/best-rated-hotel")
+	public Object getBestHotels(@RequestParam("page")Optional<Integer> page ) {
+		
+		Pageable pageable= PageRequest.of(page.orElse(0), 12,Sort.by("rating").descending());
+		Page<HotelDto> hotels=service.findAllHotel(pageable);
+		return ResponseHandler.getResponse(service.pagingFormat(hotels),HttpStatus.OK);
+	}
 }
