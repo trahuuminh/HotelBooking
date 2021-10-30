@@ -38,6 +38,8 @@ public class HotelImages extends BaseEntity {
 	private Hotel hotel;
 	
 	public Long getHotelId() {
-		return this.hotel.getId();
+		if(this.hotel != null)
+			return this.hotel.getId();
+		return null;
 	}
 }

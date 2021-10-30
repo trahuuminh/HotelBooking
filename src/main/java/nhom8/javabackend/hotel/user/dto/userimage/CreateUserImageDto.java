@@ -5,12 +5,8 @@ import lombok.Data;
 @Data
 public class CreateUserImageDto {
 
-	private String path;
+	private String name;
 	
 	private String url;
 	
-	public CreateUserImageDto(String path, String url) {
-		this.path=path;
-		this.url=url;
-	}
 }

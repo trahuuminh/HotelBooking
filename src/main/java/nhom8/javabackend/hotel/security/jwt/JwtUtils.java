@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,10 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JwtUtils {
 	private static final Logger logger= LoggerFactory.getLogger(Jwts.class);
 	
+	@Value("${jwt.secret}")
+	private String jwtSecret;
 	private Long jwtExpiration= 86400000L;
-	private String jwtSecret="thisismysecrettoken";
-	private String authHeader="authorization";
+	private String authHeader="Authorization";
 	private String tokenPrefix="Bearer";
 	
 	public String generateJwtToken(Authentication authentication) {

@@ -44,11 +44,14 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 	@Override
 	public HotelImages updateHotelImages(UpdateHotelImagesDto dto) {
 		HotelImages hotelImages=hotelImagesRepo.getById(dto.getHotelImagesId());
-		Hotel hotel=hotelRepo.getById(dto.getHotelId());
+		
+		if(dto.getHotelId() != null && dto.getHotelId() != 0) {
+			Hotel hotel=hotelRepo.getById(dto.getHotelId());
+			hotelImages.setHotel(hotel);
+		}
 		
 		hotelImages.setUrl(dto.getUrl());
 		hotelImages.setThumbUrl(dto.getThumbUrl());
-		hotelImages.setHotel(hotel);
 		
 		return hotelImagesRepo.save(hotelImages);
 	}
@@ -61,11 +64,14 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 	@Override
 	public HotelImages createNewHotelImages(CreateHotelImagesDto dto) {
 		HotelImages hotelImages=new HotelImages();
-		Hotel hotel=hotelRepo.getById(dto.getHotelId());
+		
+		if(dto.getHotelId() != null && dto.getHotelId() != 0) {
+			Hotel hotel=hotelRepo.getById(dto.getHotelId());
+			hotelImages.setHotel(hotel);
+		}
 		
 		hotelImages.setUrl(dto.getUrl());
 		hotelImages.setThumbUrl(dto.getThumbUrl());
-		hotelImages.setHotel(hotel);
 		
 		return hotelImagesRepo.save(hotelImages);
 	}
