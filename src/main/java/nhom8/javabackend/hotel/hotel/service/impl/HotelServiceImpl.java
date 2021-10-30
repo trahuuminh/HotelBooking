@@ -110,7 +110,6 @@ public class HotelServiceImpl implements HotelService {
 
 		for(User user: hotel.getUsersFavourite()) {
 			user.removeFavouriteHotel(hotel);
-
 		}
 
 	}

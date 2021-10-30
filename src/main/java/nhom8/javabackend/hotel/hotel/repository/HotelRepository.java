@@ -27,7 +27,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>{
 	@Transactional(readOnly = true)
 	@Query("SELECT h FROM Hotel h WHERE h.slug = ?1")
 	HotelDto getOneBySlug(String slug);
-
 	
 	@Transactional(readOnly = true)
 	@Query("SELECT h.id as id, h.title as title, h.slug as slug, h.content as content, "
