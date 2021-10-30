@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.FindHotelByMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelDto;
+import nhom8.javabackend.hotel.hotel.dto.PagingFormatHotelMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.entity.Hotel;
@@ -31,13 +33,13 @@ public class HotelServiceImpl implements HotelService {
 	private AmenitiesRepository amenRepo;
 	private LocationRepository LocRepo;
 	private ReviewRepository reviewRepo;
-	
-	public HotelServiceImpl(HotelRepository hotelRepository, AmenitiesRepository amenitieRepo, LocationRepository locationRepo
-			, ReviewRepository reviewRepository ) {
+
+	public HotelServiceImpl(HotelRepository hotelRepository, AmenitiesRepository amenitieRepo,
+			LocationRepository locationRepo, ReviewRepository reviewRepository) {
 		repository = hotelRepository;
-		amenRepo=amenitieRepo;
-		LocRepo=locationRepo;
-		reviewRepo=reviewRepository;
+		amenRepo = amenitieRepo;
+		LocRepo = locationRepo;
+		reviewRepo = reviewRepository;
 	}
 
 	@Override
@@ -46,9 +48,14 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Hotel addNewHotel(@Valid CreateHotelDto dto,User agent) {
-		Amenities amen=amenRepo.getById(dto.getAmenitiesId());
-		Location loc=LocRepo.getById(dto.getLocationId());
+	public Page<FindHotelByMostBookingDto> FindHotelByMostBooking(Pageable pageable) {
+		return repository.FindHotelByMostBooking(pageable);
+	}
+
+	@Override
+	public Hotel addNewHotel(@Valid CreateHotelDto dto, User agent) {
+		Amenities amen = amenRepo.getById(dto.getAmenitiesId());
+		Location loc = LocRepo.getById(dto.getLocationId());
 		Hotel newHotel = new Hotel();
 
 		newHotel.setTitle(dto.getTitle());
@@ -65,7 +72,7 @@ public class HotelServiceImpl implements HotelService {
 		newHotel.setAgent(agent);
 		newHotel.setAmenities(amen);
 		newHotel.setLocation(loc);
-		
+
 		return repository.save(newHotel);
 	}
 
@@ -91,20 +98,20 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public void deleteById(Long hotelId) {
-		
-		Hotel hotel=repository.getById(hotelId);
-		
-		for(Review r: hotel.getReviews()) {
+
+		Hotel hotel = repository.getById(hotelId);
+
+		for (Review r : hotel.getReviews()) {
 			r.setAuthor(null);
 			r.setHotel(null);
 			reviewRepo.save(r);
 		}
-		
+
 		hotel.getAgent().getListedPost().remove(hotel);
-		for(User user: hotel.getUsersFavourite()) {
+		for (User user : hotel.getUsersFavourite()) {
 			user.removeHotel(hotel);
 		}
-		
+
 	}
 
 	@Override
@@ -114,13 +121,25 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public PagingFormatHotelDto pagingFormat(Page<HotelDto> page) {
-		PagingFormatHotelDto dto=new PagingFormatHotelDto();
-		
+		PagingFormatHotelDto dto = new PagingFormatHotelDto();
+
 		dto.setPageSize(page.getSize());
 		dto.setTotalRecordCount(page.getTotalElements());
 		dto.setPageNumber(page.getNumber());
 		dto.setRecords(page.toList());
-		
+
+		return dto;
+	}
+
+	@Override
+	public PagingFormatHotelMostBookingDto pagingFormatHotelMostBooking(Page<FindHotelByMostBookingDto> page) {
+		PagingFormatHotelMostBookingDto dto = new PagingFormatHotelMostBookingDto();
+
+		dto.setPageSize(page.getSize());
+		dto.setTotalRecordCount(page.getTotalElements());
+		dto.setPageNumber(page.getNumber());
+		dto.setRecords(page.toList());
+
 		return dto;
 	}
 
@@ -134,9 +153,10 @@ public class HotelServiceImpl implements HotelService {
 		hotel.setCoverPic(image);
 		return repository.save(hotel);
 	}
-	
+
 	@Override
 	public HotelDto getHotelBySlugName(String slug) {
 		return repository.getOneBySlug(slug);
 	}
+
 }
