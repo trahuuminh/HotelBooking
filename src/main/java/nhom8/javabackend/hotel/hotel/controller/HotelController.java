@@ -146,8 +146,8 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-cover-pic")
-	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file, @RequestPart("hotelId") Long hotelId) {
+	@PostMapping("/upload-hotel-cover-pic/{hotelId}")
+	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file, @PathVariable("hotelId") Long hotelId) {
 		try {
 			String url = storageService.uploadFile(file, imagesDir);
 			CreateHotelCoverPicDto dto = new CreateHotelCoverPicDto(url, url.substring(url.lastIndexOf(imagesDir)));
@@ -182,8 +182,8 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-images")
-	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files, @RequestPart("hotelId") Long hotelId) {
+	@PostMapping("/upload-hotel-images/{hotelId}")
+	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files, @PathVariable("hotelId") Long hotelId) {
 		if(!service.isExistedId(hotelId))
 			return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
 		
