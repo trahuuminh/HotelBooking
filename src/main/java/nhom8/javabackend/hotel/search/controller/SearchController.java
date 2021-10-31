@@ -18,7 +18,7 @@ import nhom8.javabackend.hotel.hotel.service.itf.HotelService;
 import nhom8.javabackend.hotel.search.service.itf.SearchService;
 
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/api/search")
 public class SearchController {
 
 	private SearchService service;
@@ -31,18 +31,19 @@ public class SearchController {
 	
 	@GetMapping("")
 	public Object searchHotel(@RequestParam("city") Optional<String> keyword, 
-			@RequestParam(value="wifiAvailability") Optional<String> wifiAvailability, 
-			@RequestParam(value="parkingAvailability") Optional<String> parkingAvailability, 
-			@RequestParam(value="poolAvailability") Optional<String> poolAvailability, 
-			@RequestParam(value="airCondition") Optional<String> airCondition, 
-			@RequestParam(value="extraBedFacility") Optional<String> extraBedFacility, 
+			@RequestParam(value="wifiAvailability") Optional<Boolean> wifiAvailability, 
+			@RequestParam(value="parkingAvailability") Optional<Boolean> parkingAvailability, 
+			@RequestParam(value="poolAvailability") Optional<Boolean> poolAvailability, 
+			@RequestParam(value="airCondition") Optional<Boolean> airCondition, 
+			@RequestParam(value="extraBedFacility") Optional<Boolean> extraBedFacility, 
 			@RequestParam(value ="lowPrice") Optional<Integer> lowPrice, 
 			@RequestParam(value="highPrice") Optional<Integer> highPrice, 
 			@RequestParam(value="guestRoom") Optional<Integer> guestRoom, 
 			@RequestParam(value="bedRoom") Optional<Integer> bedRoom,
 			@RequestParam("page") Optional<Integer> page) {
 		try {
-			Pageable pageable=PageRequest .of(page.orElse(0),22,Sort.by("id"));
+			
+			Pageable pageable=PageRequest .of(page.orElse(0),12,Sort.by("id"));
 			
 			Page<HotelDto> listHotels = service.findHotelByOption(keyword, wifiAvailability, parkingAvailability, poolAvailability, 
 					airCondition, extraBedFacility, lowPrice, highPrice, guestRoom, bedRoom,pageable);
