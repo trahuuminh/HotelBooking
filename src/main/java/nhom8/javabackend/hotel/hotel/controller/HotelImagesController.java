@@ -1,5 +1,6 @@
 package nhom8.javabackend.hotel.hotel.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
+import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateMultipleHotelImages;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
@@ -53,6 +55,25 @@ public class HotelImagesController {
 		HotelImages hotelImages = service.createNewHotelImages(dto);
 		
 		return ResponseHandler.getResponse(hotelImages,HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/create-multiple-hotel-images")
+	public Object createMultipleNewHotelImages(@Valid @RequestBody CreateMultipleHotelImages dto, BindingResult errors) {
+		if(errors.hasErrors())
+			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
+		
+		List<HotelImages> hotelImageList = new ArrayList<>();
+		
+		for(String url : dto.getListUrl()) {
+			if(url.lastIndexOf(imagesDir) == -1) 
+				return ResponseHandler.getResponse("Unvalid hotel image url", HttpStatus.BAD_REQUEST);
+			
+			String thumbUrl = url.substring(url.lastIndexOf(imagesDir));
+			HotelImages hotelImages = service.createMultipleNewHotelImages(url, thumbUrl, dto.getHotelId());
+			hotelImageList.add(hotelImages);
+		}
+		
+		return ResponseHandler.getResponse(hotelImageList,HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update-hotel-images")
