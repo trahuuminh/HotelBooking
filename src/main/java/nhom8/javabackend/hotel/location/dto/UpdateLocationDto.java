@@ -12,9 +12,9 @@ public class UpdateLocationDto {
 	@NotNull
 	private Long id;
 	
-	private int lat;
+	private float lat;
 
-	private int lng;
+	private float lng;
 
 	private String formattedAddress;
 

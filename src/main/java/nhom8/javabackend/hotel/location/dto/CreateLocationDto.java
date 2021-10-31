@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class CreateLocationDto {
 
-	private int lat;
+	private float lat;
 
-	private int lng;
+	private float lng;
 
 	private String formattedAddress;
 
