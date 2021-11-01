@@ -20,13 +20,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.hotel.dto.CreateHotelDto;
-import nhom8.javabackend.hotel.hotel.dto.FindHotelByMostBookingDto;
 import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 import nhom8.javabackend.hotel.hotel.dto.UpdateHotelDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
@@ -147,8 +145,8 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-cover-pic")
-	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file, @RequestPart("hotelId") Long hotelId) {
+	@PostMapping("/upload-hotel-cover-pic/{hotelId}")
+	public Object uploadHotelCoverPic(@RequestParam("file") MultipartFile file, @PathVariable("hotelId") Long hotelId) {
 		try {
 			String url = storageService.uploadFile(file, imagesDir);
 			CreateHotelCoverPicDto dto = new CreateHotelCoverPicDto(url, url.substring(url.lastIndexOf(imagesDir)));
@@ -183,8 +181,8 @@ public class HotelController {
 		}
 	}
 	
-	@PostMapping("/upload-hotel-images")
-	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files, @RequestPart("hotelId") Long hotelId) {
+	@PostMapping("/upload-hotel-images/{hotelId}")
+	public Object uploadHotelImages(@RequestParam("files") MultipartFile[] files, @PathVariable("hotelId") Long hotelId) {
 		if(!service.isExistedId(hotelId))
 			return ResponseHandler.getResponse("Hotel doesn't exist",HttpStatus.BAD_REQUEST);
 		

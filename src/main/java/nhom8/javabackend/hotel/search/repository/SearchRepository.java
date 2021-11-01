@@ -40,11 +40,11 @@ public interface SearchRepository extends JpaRepository<Hotel, Long>{
 			+ "AND (am.guestRoom = :guestRoom OR :guestRoom IS NULL) "
 			+ "AND (am.bedRoom = :bedRoom OR :bedRoom IS NULL)")
 	Page<HotelDto> findHotelByOption(@Param("keyword") Optional<String> keyword, 
-									@Param("wifiAvailability") Optional<String> wifiAvailability, 
-									@Param("parkingAvailability") Optional<String> parkingAvailability, 
-									@Param("poolAvailability") Optional<String> poolAvailability, 
-									@Param("airCondition") Optional<String> airCondition, 
-									@Param("extraBedFacility") Optional<String> extraBedFacility, 
+									@Param("wifiAvailability") Optional<Boolean> wifiAvailability, 
+									@Param("parkingAvailability") Optional<Boolean> parkingAvailability, 
+									@Param("poolAvailability") Optional<Boolean> poolAvailability, 
+									@Param("airCondition") Optional<Boolean> airCondition, 
+									@Param("extraBedFacility") Optional<Boolean> extraBedFacility, 
 									@Param("lowPrice") Optional<Integer> lowPrice, 
 									@Param("highPrice") Optional<Integer> highPrice, 
 									@Param("guestRoom") Optional<Integer> guestRoom, 

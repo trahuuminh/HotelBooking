@@ -24,8 +24,8 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public Page<HotelDto> findHotelByOption(Optional<String> keyword, Optional<String> wifiAvailability, Optional<String> parkingAvailability,
-			Optional<String> poolAvailability, Optional<String> airCondition, Optional<String> extraBedFacility, Optional<Integer> lowPrice, Optional<Integer> highPrice,
+	public Page<HotelDto> findHotelByOption(Optional<String> keyword, Optional<Boolean> wifiAvailability, Optional<Boolean> parkingAvailability,
+			Optional<Boolean> poolAvailability, Optional<Boolean> airCondition, Optional<Boolean> extraBedFacility, Optional<Integer> lowPrice, Optional<Integer> highPrice,
 			Optional<Integer> guestRoom, Optional<Integer> bedRoom,Pageable pageable) {
 		
 		return repository.findHotelByOption(keyword, wifiAvailability, parkingAvailability, poolAvailability,airCondition, extraBedFacility, 

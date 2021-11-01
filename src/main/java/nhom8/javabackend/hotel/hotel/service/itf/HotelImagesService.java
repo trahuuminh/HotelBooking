@@ -18,4 +18,6 @@ public interface HotelImagesService {
 	HotelImages createNewHotelImages(CreateHotelImagesDto dto);
 	
 	void deleteHotelCoverPic(Long id);
+
+	HotelImages createMultipleNewHotelImages(String url, String thumbUrl, Long hotelId);
 }
