@@ -75,5 +75,21 @@ public class HotelImagesServiceImpl implements HotelImagesService {
 		
 		return hotelImagesRepo.save(hotelImages);
 	}
+	
+
+	@Override
+	public HotelImages createMultipleNewHotelImages(String url, String thumbUrl, Long hotelId) {
+		HotelImages hotelImages=new HotelImages();
+		
+		if(hotelId != null && hotelId != 0) {
+			Hotel hotel=hotelRepo.getById(hotelId);
+			hotelImages.setHotel(hotel);
+		}
+		
+		hotelImages.setUrl(url);
+		hotelImages.setThumbUrl(thumbUrl);
+		
+		return hotelImagesRepo.save(hotelImages);
+	}
 
 }

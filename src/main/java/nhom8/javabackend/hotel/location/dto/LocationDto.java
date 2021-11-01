@@ -3,9 +3,9 @@ package nhom8.javabackend.hotel.location.dto;
 public interface LocationDto {
 	public Long getId();
 	
-	public int getLat();
+	public float getLat();
 	
-	public int getLng();
+	public float getLng();
 	
 	public String getFormattedAddress();
 	

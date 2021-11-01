@@ -9,8 +9,8 @@ import nhom8.javabackend.hotel.hotel.dto.HotelDto;
 
 public interface SearchService {
 
-	Page<HotelDto> findHotelByOption(Optional<String> keyword, Optional<String> wifiAvailability, Optional<String> parkingAvailability, Optional<String> poolAvailability,
-			Optional<String> airCondition, Optional<String> extraBedFacility, Optional<Integer> lowPrice, Optional<Integer> highPrice, Optional<Integer> guestRoom,
+	Page<HotelDto> findHotelByOption(Optional<String> keyword, Optional<Boolean> wifiAvailability, Optional<Boolean> parkingAvailability, Optional<Boolean> poolAvailability,
+			Optional<Boolean> airCondition, Optional<Boolean> extraBedFacility, Optional<Integer> lowPrice, Optional<Integer> highPrice, Optional<Integer> guestRoom,
 			Optional<Integer> bedRoom,Pageable pageable );
 
 }
