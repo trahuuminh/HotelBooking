@@ -1,10 +1,11 @@
-server:  port: 8080
+server:
+  port: 5000
 
 spring:
-  datasource: 
+  datasource:
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password: 
+    password:
   jpa:
     show-sql: true
     generate-ddl: true
@@ -13,11 +14,15 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
-        servlet:    multipart:      enabled: true
-            max-file-size: 200MB
-      
+
+  servlet:
+    multipart:
+      enabled: true
+
+      max-file-size: 200MB
+
       max-request-size: 215MB
-      
+
 cloud:
   aws:
     credentials:
@@ -31,6 +36,6 @@ cloud:
 application:
   bucket:
     name: hotel-duancuoikhoa
-    
+
 jwt:
   secret: thisismysecrettoken
