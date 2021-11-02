@@ -31,11 +31,11 @@ public class SearchController {
 	
 	@GetMapping("")
 	public Object searchHotel(@RequestParam("city") Optional<String> keyword, 
-			@RequestParam(value="wifiAvailability") Optional<String> wifiAvailability, 
-			@RequestParam(value="parkingAvailability") Optional<String> parkingAvailability, 
-			@RequestParam(value="poolAvailability") Optional<String> poolAvailability, 
-			@RequestParam(value="airCondition") Optional<String> airCondition, 
-			@RequestParam(value="extraBedFacility") Optional<String> extraBedFacility, 
+			@RequestParam(value="wifiAvailability") Optional<Boolean> wifiAvailability, 
+			@RequestParam(value="parkingAvailability") Optional<Boolean> parkingAvailability, 
+			@RequestParam(value="poolAvailability") Optional<Boolean> poolAvailability, 
+			@RequestParam(value="airCondition") Optional<Boolean> airCondition, 
+			@RequestParam(value="extraBedFacility") Optional<Boolean> extraBedFacility, 
 			@RequestParam(value ="lowPrice") Optional<Integer> lowPrice, 
 			@RequestParam(value="highPrice") Optional<Integer> highPrice, 
 			@RequestParam(value="guestRoom") Optional<Integer> guestRoom, 
