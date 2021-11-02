@@ -49,19 +49,18 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public Location updateLocation(@Valid UpdateLocationDto dto) {
+	public Location updateLocation(UpdateLocationDto dto) {
 		Location updateLocation = repository.getById(dto.getId());
 
-		updateLocation.setLat(dto.getLat());
-		updateLocation.setLng(dto.getLng());
-		updateLocation.setFormattedAddress(dto.getFormattedAddress());
-		updateLocation.setZipcode(dto.getZipcode());
-		updateLocation.setCity(dto.getCity());
-		updateLocation.setStateLong(dto.getStateLong());
-		updateLocation.setStateShort(dto.getStateShort());
-		updateLocation.setCountryLong(dto.getCountryLong());
-		updateLocation.setCountryShort(dto.getCountryShort());
-		updateLocation.setNumberOfPost(dto.getNumberOfPost());
+		if(dto.getLat() != 0) updateLocation.setLat(dto.getLat());
+		if(dto.getLng() != 0) updateLocation.setLng(dto.getLng());
+		if(dto.getFormattedAddress() != null) updateLocation.setFormattedAddress(dto.getFormattedAddress());
+		if(dto.getZipcode() != null) updateLocation.setZipcode(dto.getZipcode());
+		if(dto.getCity() != null) updateLocation.setCity(dto.getCity());
+		if(dto.getStateLong() != null) updateLocation.setStateLong(dto.getStateLong());
+		if(dto.getStateShort() != null) updateLocation.setStateShort(dto.getStateShort());
+		if(dto.getCountryLong() != null) updateLocation.setCountryLong(dto.getCountryLong());
+		if(dto.getCountryShort() != null) updateLocation.setCountryShort(dto.getCountryShort());
 		
 		return repository.save(updateLocation);
 	}
