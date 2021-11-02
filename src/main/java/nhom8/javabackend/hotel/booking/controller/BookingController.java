@@ -94,7 +94,7 @@ public class BookingController {
 		}
 	}
 
-	@DeleteMapping("/delete-booking//{booking-id}")
+	@DeleteMapping("/delete-booking/{booking-id}")
 	public Object deleteBooking(@PathVariable("booking-id") Long bookingId,HttpServletRequest request) {
 		try {
 			if(jwt.getJwtTokenFromRequest(request)==null)
@@ -115,8 +115,8 @@ public class BookingController {
 		}
 	}
 	
-	@GetMapping("find-all-booking-by-agent-id")
-	public Object findAllBookingByAgentId(@RequestParam("agent-id") Long agentId,@RequestParam("page") Optional<Integer> p,HttpServletRequest request) {
+	@GetMapping("/agent/{agent-id}")
+	public Object findAllBookingByAgentId(@PathVariable("agent-id") Long agentId, @RequestParam("page") Optional<Integer> p,HttpServletRequest request) {
 		try {
 			if(jwt.getJwtTokenFromRequest(request)==null)
 				return ResponseHandler.getResponse("please sign in first",HttpStatus.BAD_REQUEST);

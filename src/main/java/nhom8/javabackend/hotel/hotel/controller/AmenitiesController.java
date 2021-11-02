@@ -23,7 +23,7 @@ import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.service.itf.AmenitiesService;
 
 @RestController
-@RequestMapping("/api/hotel/amenities")
+@RequestMapping("/api/amenities")
 public class AmenitiesController {
 	private AmenitiesService service;
 	

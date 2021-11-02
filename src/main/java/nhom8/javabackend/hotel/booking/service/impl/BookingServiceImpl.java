@@ -1,7 +1,5 @@
 package nhom8.javabackend.hotel.booking.service.impl;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public Booking addedNewBooking(@Valid CreateBookingDto dto, User customer) {
+	public Booking addedNewBooking(CreateBookingDto dto, User customer) {
 		Booking newBooking = new Booking();
 		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		
@@ -53,16 +51,16 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public Booking updateBooking(@Valid UpdateBookingDto dto) {
+	public Booking updateBooking(UpdateBookingDto dto) {
 		Booking updateBooking = repository.getById(dto.getId());
 
-		updateBooking.setBookerEmail(dto.getBookerEmail());
-		updateBooking.setBookerContact(dto.getBookerEmail());
-		updateBooking.setMessage(dto.getMessage());
-		updateBooking.setRooms(dto.getRooms());
-		updateBooking.setGuests(dto.getGuests());
-		updateBooking.setStartDate(dto.getStartDate());
-		updateBooking.setEndDate(dto.getEndDate());
+		if(dto.getBookerEmail() != null) updateBooking.setBookerEmail(dto.getBookerEmail());
+		if(dto.getBookerContact() != null) updateBooking.setBookerContact(dto.getBookerContact());
+		if(dto.getMessage() != null) updateBooking.setMessage(dto.getMessage());
+		if(dto.getRooms() != 0) updateBooking.setRooms(dto.getRooms());
+		if(dto.getGuests() != 0) updateBooking.setGuests(dto.getGuests());
+		if(dto.getStartDate() != null) updateBooking.setStartDate(dto.getStartDate());
+		if(dto.getEndDate() != null) updateBooking.setEndDate(dto.getEndDate());
 		
 		return repository.save(updateBooking);
 	}

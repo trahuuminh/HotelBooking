@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
-import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateMultipleHotelImages;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
@@ -34,28 +33,15 @@ public class HotelImagesController {
 		service=hotelImagesService;
 	}
 	
-	@GetMapping("/find-all-hotel-images")
+	@GetMapping()
 	public Object findAllHotelImages() {
 		List<HotelImagesDto>hotelImagesList=service.findAllHotelImagesDto();
 		
 		return ResponseHandler.getResponse(hotelImagesList,HttpStatus.OK);
 	}
 	
-	@PostMapping("/add-hotel-image")
-	public Object createNewHotelImages(@Valid @RequestBody CreateHotelImagesDto dto, BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		if(dto.getUrl().lastIndexOf(imagesDir) == -1) 
-			return ResponseHandler.getResponse("Unvalid hotel image url", HttpStatus.BAD_REQUEST);
-
-		HotelImages hotelImages = service.createNewHotelImages(dto);
-		
-		return ResponseHandler.getResponse(hotelImages,HttpStatus.CREATED);
-	}
-	
-	@PostMapping("/add-multiple-hotel-images")
-	public Object createMultipleNewHotelImages(@Valid @RequestBody CreateMultipleHotelImages dto, BindingResult errors) {
+	@PostMapping("/add-hotel-images")
+	public Object createHotelImages(@Valid @RequestBody CreateMultipleHotelImages dto, BindingResult errors) {
 		if(errors.hasErrors())
 			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 		
