@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
+import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.user.entity.User;
 
 
@@ -22,15 +23,14 @@ import nhom8.javabackend.hotel.user.entity.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode(callSuper = false)
+@ToString(exclude = {"hotel","customer"})
+@EqualsAndHashCode(callSuper = false, exclude = {"hotel","customer"})
 @Entity
 @Table(name = "booking")
 public class Booking extends BaseEntity{
 	@NotNull
 	private String bookerEmail;
 	
-	@NotNull
 	private String bookerContact;
 	
 	private String message;
@@ -48,6 +48,11 @@ public class Booking extends BaseEntity{
 	private LocalDateTime endDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "agent_id")
-	private User agent;
+	@JoinColumn(name = "customer_id")
+	private User customer;
+	
+	@ManyToOne
+	@JoinColumn(name = "hotel_id")
+	private Hotel hotel;
+	
 }

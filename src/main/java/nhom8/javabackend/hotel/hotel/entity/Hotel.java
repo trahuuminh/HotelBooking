@@ -24,17 +24,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import nhom8.javabackend.hotel.booking.entity.Review;
+import nhom8.javabackend.hotel.booking.entity.Booking;
 import nhom8.javabackend.hotel.common.entity.BaseEntity;
 import nhom8.javabackend.hotel.hotel.util.Status;
+import nhom8.javabackend.hotel.location.entity.Location;
+import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.user.entity.User;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString/*(exclude = {"favouriteUsers"})*/
-@EqualsAndHashCode(/*exclude = {"favouriteUsers"},*/callSuper = false)
+@ToString(exclude = {"usersFavourite", "agent","images"})
+@EqualsAndHashCode(exclude = {"usersFavourite", "agent","images"}, callSuper = false)
 @Entity
 @Table(name = "hotel")
 public class Hotel extends BaseEntity {
@@ -54,12 +56,10 @@ public class Hotel extends BaseEntity {
 	
 	private boolean isNegotiable;
 	
-	private String propertyType;
-	
 	private String condition;
 	
 	@NotNull
-	private int rating;
+	private float rating ;
 	
 	@NotNull
 	private int ratingCount;
@@ -69,34 +69,47 @@ public class Hotel extends BaseEntity {
 	
 	private String termsAndCondition;
 	
-	@ManyToOne
-	@JoinColumn(name = "agent_id")
-	private User agent; 
+	
+	@JsonIgnore
+	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.LAZY)
+	@JoinColumn(name = "agent_id", referencedColumnName = "id")
+	private User agent;
 	
 	@OneToOne
-	@JoinColumn(name = "amenity_id")
-	private Amenities amenity;
+	@JoinColumn(name = "amenities_id")
+	private Amenities amenities;
 	
-	@OneToMany(mappedBy = "hotel",cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
-	private Set<HotelImages> images=new HashSet<HotelImages>();
+	private Set<HotelImages> images = new HashSet<HotelImages>();
 	
 	@OneToOne
-	@JoinColumn(name = "cover_image_id")
-	private HotelImages coverImage;
+	@JoinColumn(name = "cover_pic_id")
+	private HotelImages coverPic;
 	
 	@OneToOne
 	@JoinColumn(name = "location_id")
 	private Location location;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "favouritePosts")
+	@ManyToMany(mappedBy = "favouritePost")
 	@Builder.Default
-	private Set<User> favouriteUsers=new HashSet<User>();
+	private Set<User> usersFavourite = new HashSet<User>();
 	
-	@OneToMany(mappedBy = "hotel", cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JsonIgnore
 	@Builder.Default
-	private Set<Review> reviews=new HashSet<Review>();
+	private Set<Review> reviews = new HashSet<Review>();
+	
+	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JsonIgnore
+	@Builder.Default
+	private Set<Booking> bookings =new HashSet<Booking>();
+	
+	public void removeFavouriteUser(User user) {
+		this.usersFavourite.remove(user);
+		user.getFavouritePost().remove(this);
+	}
+
 }

@@ -1,13 +1,41 @@
+server:
+  port: 5000
+
 spring:
-  datasource: 
+  datasource:
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password: minhthichlag
+    password:
   jpa:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+  servlet:
+    multipart:
+      enabled: true
+
+      max-file-size: 200MB
+
+      max-request-size: 215MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAXTNJP66PWCGJ3ANV
+      secret-key: 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
+    region:
+      static: ap-southeast-1
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: hotel-duancuoikhoa
+
+jwt:
+  secret: thisismysecrettoken
