@@ -222,18 +222,6 @@ public class UserController {
 		if(jwt.getJwtTokenFromRequest(request)==null)
 			return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
 		try {
-//			Calendar date= Calendar.getInstance();
-//			String fileName =date.getTimeInMillis()+"-"+file.getOriginalFilename();
-//			String userDirectory=Paths.get("").toAbsolutePath().toString();
-//			Path folderPath = Paths.get(userDirectory + uploadDir);
-//			
-//			if(!Files.exists(folderPath)) {
-//				Files.createDirectories(folderPath);
-//			}
-//			
-//			Path path = Paths.get(userDirectory + uploadDir + fileName);
-//			
-//			Files.write(path, file.getBytes());
 			
 			String url = storageService.uploadFile(file, imagesDir);
 			

@@ -15,9 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@Query("SELECT r FROM Review r")
 	Page<ReviewDto> findAllReviewDto(Pageable pageable);
 	
-	@Query("SELECT r.id FROM Review r JOIN r.hotel h WHERE h.id = ?1")
-	List<Long> findAllReviewIdByHotelId(Long hotelId);
-	
 	@Query("SELECT r.id FROM Review r JOIN r.author a WHERE a.id = ?1 ")
 	List<Long>findAllReviewIdByAuthorId(Long authorId);
 }
