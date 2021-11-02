@@ -23,7 +23,7 @@ import nhom8.javabackend.hotel.hotel.entity.Amenities;
 import nhom8.javabackend.hotel.hotel.service.itf.AmenitiesService;
 
 @RestController
-@RequestMapping("/api/hotel/amenities")
+@RequestMapping("/api/amenities")
 public class AmenitiesController {
 	private AmenitiesService service;
 	
@@ -32,14 +32,14 @@ public class AmenitiesController {
 	}
 	
 	@GetMapping
-	public Object findAllLocation() {
+	public Object findAllAmenities() {
 		List<AmenitiesDto> amenities = service.findAllDto();
 		return ResponseHandler.getResponse(amenities, HttpStatus.OK);
 
 	}
 
 	@PostMapping("/add-amenities")
-	public Object addLocation(@Valid @RequestBody CreateAmenitiesDto dto, BindingResult errors) {
+	public Object addAmenities(@Valid @RequestBody CreateAmenitiesDto dto, BindingResult errors) {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 
@@ -49,7 +49,7 @@ public class AmenitiesController {
 	}
 
 	@PutMapping("/update-amenities")
-	public Object updateLocation(@Valid @RequestBody UpdateAmenitiesDto dto, BindingResult errors) {
+	public Object updateAmenities(@Valid @RequestBody UpdateAmenitiesDto dto, BindingResult errors) {
 		if (errors.hasErrors())
 			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
 
@@ -59,7 +59,7 @@ public class AmenitiesController {
 	}
 
 	@DeleteMapping("/delete-amenities/{amenities-id}")
-	public Object deleteLocation(@PathVariable("amenities-id") Long amenitiesId) {
+	public Object deleteAmenities(@PathVariable("amenities-id") Long amenitiesId) {
 		service.deleteById(amenitiesId);
 
 		return ResponseHandler.getResponse(HttpStatus.OK);

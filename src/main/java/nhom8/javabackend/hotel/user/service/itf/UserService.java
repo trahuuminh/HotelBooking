@@ -1,11 +1,9 @@
 package nhom8.javabackend.hotel.user.service.itf;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import nhom8.javabackend.hotel.user.dto.AddHotelDto;
+import nhom8.javabackend.hotel.security.dto.RegisterDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.PagingFormatUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
@@ -28,9 +26,9 @@ public interface UserService  {
 
 	boolean isExistedId(Long userId);
 
-	User addFavouriteHotel(AddHotelDto dto, User user);
+	User addFavouriteHotel(Long hotelId, User user);
 
-	User removeFavouriteHotel(@Valid AddHotelDto dto,User user);
+	User removeFavouriteHotel(Long hotelId, User user);
 	
 	UserDto getUserDtoByUsername(String username);
 	
@@ -44,5 +42,5 @@ public interface UserService  {
 	
 	User getUserByUserId(Long userId);
 	
-	User register(CreateUserDto dto);
+	User register(RegisterDto dto);
 }

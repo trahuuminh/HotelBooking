@@ -45,8 +45,17 @@ public class SearchController {
 			
 			Pageable pageable=PageRequest .of(page.orElse(0),12,Sort.by("id"));
 			
-			Page<HotelDto> listHotels = service.findHotelByOption(keyword, wifiAvailability, parkingAvailability, poolAvailability, 
-					airCondition, extraBedFacility, lowPrice, highPrice, guestRoom, bedRoom,pageable);
+			Page<HotelDto> listHotels = service.findHotelByOption(keyword, 
+																wifiAvailability, 
+																parkingAvailability, 
+																poolAvailability, 
+																airCondition, 
+																extraBedFacility, 
+																lowPrice, 
+																highPrice, 
+																guestRoom, 
+																bedRoom,
+																pageable);
 
 			return ResponseHandler.getResponse(hotelService.pagingFormat(listHotels), HttpStatus.OK);
 		} catch (Exception e) {

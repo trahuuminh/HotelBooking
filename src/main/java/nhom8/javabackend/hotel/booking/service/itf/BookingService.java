@@ -1,7 +1,5 @@
 package nhom8.javabackend.hotel.booking.service.itf;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,9 +16,9 @@ public interface BookingService {
 	
 	PagingFormatBookingDto pagingFormat(Page<BookingDto> page);
 
-	Booking addedNewBooking(@Valid CreateBookingDto dto, User customer);
+	Booking addedNewBooking(CreateBookingDto dto, User customer);
 
-	Booking updateBooking(@Valid UpdateBookingDto dto);
+	Booking updateBooking(UpdateBookingDto dto);
 
 	void deleteById(Long bookingId);
 	

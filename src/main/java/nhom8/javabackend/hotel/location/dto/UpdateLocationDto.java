@@ -30,5 +30,4 @@ public class UpdateLocationDto {
 
 	private String countryShort;
 
-	private int numberOfPost;
 }

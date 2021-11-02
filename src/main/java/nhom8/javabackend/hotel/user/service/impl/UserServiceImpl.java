@@ -2,7 +2,6 @@ package nhom8.javabackend.hotel.user.service.impl;
 
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,7 @@ import nhom8.javabackend.hotel.hotel.entity.Hotel;
 import nhom8.javabackend.hotel.hotel.repository.HotelRepository;
 import nhom8.javabackend.hotel.review.entity.Review;
 import nhom8.javabackend.hotel.review.repository.ReviewRepository;
-import nhom8.javabackend.hotel.user.dto.AddHotelDto;
+import nhom8.javabackend.hotel.security.dto.RegisterDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.PagingFormatUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
@@ -131,8 +130,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User addFavouriteHotel(AddHotelDto dto, User user) {
-		Hotel hotel = hotelRepo.getById(dto.getHotelId());
+	public User addFavouriteHotel(Long hotelId, User user) {
+		Hotel hotel = hotelRepo.getById(hotelId);
 		
 		user.addFavouriteHotel(hotel);
 		
@@ -140,8 +139,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User removeFavouriteHotel(@Valid AddHotelDto dto,User user) {
-		Hotel hotel = hotelRepo.getById(dto.getHotelId());
+	public User removeFavouriteHotel(Long hotelId, User user) {
+		Hotel hotel = hotelRepo.getById(hotelId);
 		
 		user.removeFavouriteHotel(hotel);
 		
@@ -205,7 +204,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User register(CreateUserDto dto) {
+	public User register(RegisterDto dto) {
 		User user=new User();
 		
 		user.setRole(Role.USER);

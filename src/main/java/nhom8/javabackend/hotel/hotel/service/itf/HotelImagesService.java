@@ -5,7 +5,6 @@ import java.util.List;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelCoverPicDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.CreateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.dto.hotelimages.HotelImagesDto;
-import nhom8.javabackend.hotel.hotel.dto.hotelimages.UpdateHotelImagesDto;
 import nhom8.javabackend.hotel.hotel.entity.HotelImages;
 
 public interface HotelImagesService {
@@ -13,11 +12,9 @@ public interface HotelImagesService {
 	
 	HotelImages createNewHotelCoverPic(CreateHotelCoverPicDto dto);
 	
-	HotelImages updateHotelImages(UpdateHotelImagesDto dto);
-	
 	HotelImages createNewHotelImages(CreateHotelImagesDto dto);
 	
-	void deleteHotelCoverPic(Long id);
+	void deleteHotelImageById(Long id);
 
 	HotelImages createMultipleNewHotelImages(String url, String thumbUrl, Long hotelId);
 }

@@ -16,8 +16,10 @@ public class CreateHotelDto {
 	@NotNull
 	private Long locationId;
 	
+	@NotNull
 	private String title;
-
+	
+	@NotNull
 	private String slug;
 
 	private String content;
@@ -32,10 +34,6 @@ public class CreateHotelDto {
 
 	private String condition;
 
-	@NotNull
-	private int ratingCount;
-
-	@NotNull
 	private String contactNumber;
 
 	private String termsAndCondition;

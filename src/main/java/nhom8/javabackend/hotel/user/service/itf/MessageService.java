@@ -8,15 +8,12 @@ import org.springframework.data.domain.Pageable;
 import nhom8.javabackend.hotel.user.dto.message.CreateMessageDto;
 import nhom8.javabackend.hotel.user.dto.message.MessageDto;
 import nhom8.javabackend.hotel.user.dto.message.PagingFormatMessageDto;
-import nhom8.javabackend.hotel.user.dto.message.UpdateMessageDto;
 import nhom8.javabackend.hotel.user.entity.Message;
 
 public interface MessageService {
 	List<MessageDto> findAllMessageDto();
 	
 	Message createNewMessage(CreateMessageDto dto);
-	
-	Message updateMessage(UpdateMessageDto dto);
 	
 	void deleteMessage(Long id);
 	

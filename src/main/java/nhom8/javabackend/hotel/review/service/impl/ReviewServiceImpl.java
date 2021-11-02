@@ -38,6 +38,7 @@ public class ReviewServiceImpl implements ReviewService{
 		Review review =new Review();
 		Hotel hotel=hotelRepo.getById(dto.getHotelId());
 		float avgReviewRating=(dto.getCleannessRating()+dto.getFoodRating()+dto.getRoomRating()+dto.getServiceRating())/4;
+		
 		if(hotel.getRatingCount()==0) {
 			hotel.setRatingCount(1);
 			hotel.setRating(avgReviewRating);
@@ -45,7 +46,6 @@ public class ReviewServiceImpl implements ReviewService{
 			hotel.setRating(((hotel.getRatingCount() * hotel.getRating() + (avgReviewRating))/(hotel.getRatingCount() + 1)));
 			hotel.setRatingCount(hotel.getRatingCount()+1);
 		}	
-		
 		
 		review.setAuthor(author);
 		review.setHotel(hotel);

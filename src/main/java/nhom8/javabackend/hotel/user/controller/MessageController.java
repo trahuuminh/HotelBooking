@@ -1,4 +1,4 @@
-package nhom8.javabackend.hotel.user.controller;
+ package nhom8.javabackend.hotel.user.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +25,6 @@ import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
 import nhom8.javabackend.hotel.user.dto.message.CreateMessageDto;
 import nhom8.javabackend.hotel.user.dto.message.MessageDto;
-import nhom8.javabackend.hotel.user.dto.message.UpdateMessageDto;
 import nhom8.javabackend.hotel.user.entity.Message;
 import nhom8.javabackend.hotel.user.entity.User;
 import nhom8.javabackend.hotel.user.service.itf.MessageService;
@@ -47,7 +45,7 @@ public class MessageController {
 		jwt=Jwt;
 	}
 	
-	@GetMapping("/find-all-message")
+	@GetMapping()
 	public Object findAllMessage() {
 		List<MessageDto> messages=service.findAllMessageDto();
 		
@@ -64,16 +62,6 @@ public class MessageController {
 		return ResponseHandler.getResponse(message,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/update-message")
-	public Object updateMessage(@Valid @RequestBody UpdateMessageDto dto,BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		Message message=service.updateMessage(dto);
-		
-		return ResponseHandler.getResponse(message,HttpStatus.OK);
-	}
-	
 	@DeleteMapping("/delete/{message-id}")
 	public Object deleteMessage(@PathVariable("message-id")Long id) {
 		if(!service.isExistedId(id))
@@ -84,8 +72,8 @@ public class MessageController {
 		return ResponseHandler.getResponse(HttpStatus.OK);
 	}
 	
-	@GetMapping("/find-messages-by-agent-id")
-	public Object findAllMessagesByAgentId(@RequestParam("page")Optional<Integer> page, @RequestParam("agentId") Long agentId, HttpServletRequest request) {
+	@GetMapping("/agent/{agent-id}")
+	public Object findAllMessagesByAgentId(@RequestParam("page")Optional<Integer> page, @PathVariable("agent-id") Long agentId, HttpServletRequest request) {
 		try {
 			if(!userService.isExistedId(agentId))
 				return ResponseHandler.getResponse("Agent doesn't exist",HttpStatus.BAD_REQUEST);
