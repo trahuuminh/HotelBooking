@@ -38,7 +38,7 @@ public class LocationServiceImpl implements LocationService {
 		newLocation.setLng(dto.getLng());
 		newLocation.setFormattedAddress(dto.getFormattedAddress());
 		newLocation.setZipcode(dto.getZipcode());
-		newLocation.setCity(dto.getCity());
+		newLocation.setCity(dto.getCity().equals("") ? dto.getCountryLong() : dto.getCity());
 		newLocation.setStateLong(dto.getStateLong());
 		newLocation.setStateShort(dto.getStateShort());
 		newLocation.setCountryLong(dto.getCountryLong());

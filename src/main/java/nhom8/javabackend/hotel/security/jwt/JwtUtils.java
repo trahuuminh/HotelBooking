@@ -25,7 +25,7 @@ public class JwtUtils {
 	
 	@Value("${jwt.secret}")
 	private String jwtSecret;
-	private Long jwtExpiration= 86400000L;
+	private Long jwtExpiration= 648000000L;
 	private String authHeader="Authorization";
 	private String tokenPrefix="Bearer";
 	
