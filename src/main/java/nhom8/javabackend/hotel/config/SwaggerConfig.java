@@ -13,7 +13,6 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -37,8 +36,7 @@ public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("Hotel Booking Application")
-				.description("Hotel Booking")
-				.contact(new Contact("A", "A.dev", "A.dev"))
+				.description("Dự án tốt ngiệp của nhóm 8. Thành viên:\n - Võ Anh Hiếu\n - Trà Hữu Minh\n - Dương Nhật Tân")
 				.license("MIT2")
 				.build();
 	}
