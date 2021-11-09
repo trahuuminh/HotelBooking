@@ -1,8 +1,5 @@
 package nhom8.javabackend.hotel.hotel.service.itf;
 
-
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,9 +17,9 @@ public interface HotelService {
 
 	PagingFormatHotelDto pagingFormat (Page<HotelDto> page);
 	
-	Hotel addNewHotel(@Valid CreateHotelDto dto,User agent);
+	Hotel addNewHotel(CreateHotelDto dto,User agent);
 
-	Hotel updateHotel(@Valid UpdateHotelDto dto);
+	Hotel updateHotel(UpdateHotelDto dto);
 
 	void deleteById(Long hotelId);
 	

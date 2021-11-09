@@ -11,10 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import nhom8.javabackend.hotel.common.responsehandler.ResponseHandler;
 import nhom8.javabackend.hotel.s3.service.StorageService;
 import nhom8.javabackend.hotel.security.jwt.JwtUtils;
-import nhom8.javabackend.hotel.user.dto.AddHotelDto;
 import nhom8.javabackend.hotel.user.dto.user.CreateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UpdateUserDto;
 import nhom8.javabackend.hotel.user.dto.user.UserDto;
@@ -51,18 +46,15 @@ public class UserController {
 	private UserService service;
 	private JwtUtils jwt;
 	private UserImageService userImageService;
-	private final AuthenticationManager authenticationManager;
 	private StorageService storageService;
 	
 	public UserController(UserService userService,
 						JwtUtils jwtUtils,
 						UserImageService userimageService,
-						AuthenticationManager authManager,
 						StorageService s3StorageService) {
 		service=userService;
 		jwt=jwtUtils;
 		userImageService=userimageService;
-		authenticationManager =authManager;
 		storageService = s3StorageService;
 	}
 	
@@ -82,7 +74,7 @@ public class UserController {
 				return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 			
 			else if(jwt.getJwtTokenFromRequest(request)==null)
-				return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
+				return ResponseHandler.getResponse("Please sign in first before create user",HttpStatus.BAD_REQUEST);
 			
 			else if(service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN) || 
 					service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getCellNumber().equals("secretadmin")) {
@@ -90,7 +82,7 @@ public class UserController {
 				return ResponseHandler.getResponse(newUser, HttpStatus.CREATED);
 			}
 			
-			return ResponseHandler.getResponse("you're not allowed to create this user",HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse("You're not allowed to create this user. Admin only.",HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
@@ -104,7 +96,7 @@ public class UserController {
 				return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
 			
 			else if(jwt.getJwtTokenFromRequest(request)==null)
-				return ResponseHandler.getResponse("please sign in first before update",HttpStatus.BAD_REQUEST);
+				return ResponseHandler.getResponse("Please sign in first before update",HttpStatus.BAD_REQUEST);
 			
 			User currentUser=service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request)));
 			
@@ -113,7 +105,7 @@ public class UserController {
 				return ResponseHandler.getResponse(user,HttpStatus.OK);
 			}
 			
-			return ResponseHandler.getResponse("you're not allowed to update this user",HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse("You're not allowed to update this user.",HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
@@ -124,13 +116,14 @@ public class UserController {
 	public Object deleteUser(@PathVariable("user-id")Long id,HttpServletRequest request) {
 		try {
 			if(jwt.getJwtTokenFromRequest(request)==null)
-				return ResponseHandler.getResponse("please sign in first before delete",HttpStatus.BAD_REQUEST);
+				return ResponseHandler.getResponse("Please sign in first before delete",HttpStatus.BAD_REQUEST);
+
+			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN) &&
+					service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getId() != id)
+				return ResponseHandler.getResponse("You're not allowed to delete this user",HttpStatus.BAD_REQUEST);
 			
 			else if(!service.isExistedId(id))
 				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
-			
-			else if(!service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))).getRole().equals(Role.ADMIN))
-				return ResponseHandler.getResponse("you're not allowed to delete this user",HttpStatus.BAD_REQUEST);
 			
 			else if(service.getUserByUserId(id).getListedPost().size()>0)
 				return ResponseHandler.getResponse("Please delete all this user's hotels first before delete this user !",HttpStatus.BAD_REQUEST);
@@ -143,62 +136,65 @@ public class UserController {
 		}	
 	}
 	
-	@PostMapping("/add-favourite-hotel")
-	public Object addHotelToFavouritePost(@Valid @RequestBody AddHotelDto dto, BindingResult errors,HttpServletRequest request) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST); 
-		else if(jwt.getJwtTokenFromRequest(request)==null)
-			return ResponseHandler.getResponse("please sign in first if you want to add this hotel to your favourite hotel list",HttpStatus.BAD_REQUEST);
-		
-		User updateUser = service.addFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
+	@PostMapping("/add-favourite-hotel/{hotel-id}")
+	public Object addHotelToFavouritePost(@PathVariable("hotel-id") Long hotelId,HttpServletRequest request) {
+		if(jwt.getJwtTokenFromRequest(request)==null)
+			return ResponseHandler.getResponse("Please sign in first.", HttpStatus.BAD_REQUEST);
+		try {
+			service.addFavouriteHotel(hotelId, service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 
-		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}
 		
-	@PostMapping("/remove-favourite-hotel")
-	public Object removeHotelFromFavouritePost(@Valid @RequestBody AddHotelDto dto,BindingResult errors,HttpServletRequest request) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors, HttpStatus.BAD_REQUEST);
+	@DeleteMapping("/remove-favourite-hotel/{hotel-id}")
+	public Object removeHotelFromFavouritePost(@PathVariable("hotel-id") Long hotelId, HttpServletRequest request) {
+		if(jwt.getJwtTokenFromRequest(request) == null)
+			return ResponseHandler.getResponse("Please sign in first.", HttpStatus.BAD_REQUEST);
+		try {
+			service.removeFavouriteHotel(hotelId, service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
+			return ResponseHandler.getResponse(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.OK);
+		}
 		
-		User updateUser = service.removeFavouriteHotel(dto,service.getUserByUsername(jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request))));
-		
-		return ResponseHandler.getResponse(updateUser, HttpStatus.OK);
 	}
 	
 	@GetMapping("/get-user-details/{user-id}")
 	public Object getUserDetails(@PathVariable("user-id") Long id) {
-			if(!service.isExistedId(id))
-				return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
-		
-			try {
-				UserDto user = service.getUserDetails(id);
-				
-				return ResponseHandler.getResponse(user,HttpStatus.OK);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
-			}
+		if(!service.isExistedId(id))
+			return ResponseHandler.getResponse("User doesn't exist",HttpStatus.BAD_REQUEST);
+		try {
+			UserDto user = service.getUserDetails(id);
+			return ResponseHandler.getResponse(user,HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@GetMapping("/current-user")
 	public Object getCurrentUser(HttpServletRequest request) {
-		
-		
+		if(jwt.getJwtTokenFromRequest(request) == null)
+			return ResponseHandler.getResponse("Please sign in first.", HttpStatus.BAD_REQUEST);
 		try {
-			String username=jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
-			
+			String username = jwt.getUsernameFromToken(jwt.getJwtTokenFromRequest(request));
 			return ResponseHandler.getResponse(service.getUserDtoByUsername(username),HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return ResponseHandler.getResponse("Unreachable token !",HttpStatus.BAD_REQUEST);
 	}
 	
 	@PostMapping("/upload-user-profile-pic")
 	public Object uploadUserProfilePic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-		
+		if(file.isEmpty()) return ResponseHandler.getResponse("file is not present",HttpStatus.BAD_REQUEST);
 		if(jwt.getJwtTokenFromRequest(request)==null)
-			return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse("Please sign in first before create user",HttpStatus.BAD_REQUEST);
 		try {
 			String url = storageService.uploadFile(file, imagesDir);
 			CreateUserImageDto dto = new CreateUserImageDto();
@@ -212,13 +208,13 @@ public class UserController {
 			return ResponseHandler.getResponse(service.setUserProfilePic(user, userImage).getProfilePic(), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@PostMapping("/upload-user-cover-pic")
 	public Object uploadUserCoverPic(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-
+		if(file.isEmpty()) return ResponseHandler.getResponse("file is not present",HttpStatus.BAD_REQUEST);
 		if(jwt.getJwtTokenFromRequest(request)==null)
 			return ResponseHandler.getResponse("please sign in first before create user",HttpStatus.BAD_REQUEST);
 		try {
@@ -237,7 +233,7 @@ public class UserController {
 			return ResponseHandler.getResponse(service.setUserCoverPic(user, userImage).getCoverPic(), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -255,8 +251,8 @@ public class UserController {
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 	}
 	
 	@DeleteMapping("/delete-user-cover-pic")
@@ -273,29 +269,8 @@ public class UserController {
 			return ResponseHandler.getResponse(HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return ResponseHandler.getResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
-	}
-	
-	@PostMapping("/register")
-	public Object register(@Valid @RequestBody CreateUserDto dto,BindingResult errors) {
-		if(errors.hasErrors())
-			return ResponseHandler.getResponse(errors,HttpStatus.BAD_REQUEST);
-		
-		service.register(dto);
-		Authentication auth=null;
-		
-		try {
-			auth= authenticationManager.authenticate
-					(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
-			SecurityContextHolder.getContext().setAuthentication(auth);
-			String token=jwt.generateJwtToken(auth);
-			return ResponseHandler.getResponse(token,HttpStatus.CREATED);			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return ResponseHandler.getResponse(HttpStatus.BAD_REQUEST);
 	}
 
 }

@@ -17,8 +17,6 @@ public class UpdateHotelDto {
 	
 	private String title;
 
-	private String slug;
-
 	private String content;
 
 	private Status status;
@@ -28,10 +26,6 @@ public class UpdateHotelDto {
 	private boolean isNegotiable;
 
 	private String condition;
-
-	private float rating;
-
-	private int ratingCount;
 
 	private String contactNumber;
 

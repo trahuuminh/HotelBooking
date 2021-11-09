@@ -1,7 +1,5 @@
 package nhom8.javabackend.hotel.hotel.service.impl;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,22 +49,22 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Hotel addNewHotel(@Valid CreateHotelDto dto, User agent) {
+	public Hotel addNewHotel(CreateHotelDto dto, User agent) {
 		Amenities amen = amenRepo.getById(dto.getAmenitiesId());
 		Location loc = LocRepo.getById(dto.getLocationId());
 		Hotel newHotel = new Hotel();
 
 		newHotel.setTitle(dto.getTitle());
 		newHotel.setSlug(dto.getSlug());
-		newHotel.setContent(dto.getContent());
+		newHotel.setContent(dto.getContent() != null ? dto.getContent() : "");
 		newHotel.setStatus(dto.getStatus());
 		newHotel.setPrice(dto.getPrice());
 		newHotel.setNegotiable(dto.isNegotiable());
 		newHotel.setRating(0);
-		newHotel.setCondition(dto.getCondition());
+		newHotel.setCondition(dto.getCondition() != null ? dto.getCondition() : "");
 		newHotel.setRatingCount(0);
-		newHotel.setContactNumber(dto.getContactNumber());
-		newHotel.setTermsAndCondition(dto.getTermsAndCondition());
+		newHotel.setContactNumber(dto.getContactNumber() != null ? dto.getContactNumber() : "");
+		newHotel.setTermsAndCondition(dto.getTermsAndCondition() != null ? dto.getTermsAndCondition() : "");
 		newHotel.setAgent(agent);
 		newHotel.setAmenities(amen);
 		newHotel.setLocation(loc);
@@ -75,20 +73,18 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public Hotel updateHotel(@Valid UpdateHotelDto dto) {
+	public Hotel updateHotel(UpdateHotelDto dto) {
 
 		Hotel updateHotel = repository.getById(dto.getId());
 
-		updateHotel.setTitle(dto.getTitle());
-		updateHotel.setSlug(dto.getSlug());
-		updateHotel.setContent(dto.getContent());
-		updateHotel.setStatus(dto.getStatus());
-		updateHotel.setPrice(dto.getPrice());
+		if(dto.getTitle() != null) updateHotel.setTitle(dto.getTitle());
+		if(dto.getContent() != null) updateHotel.setContent(dto.getContent());
+		if(dto.getStatus() != null) updateHotel.setStatus(dto.getStatus());
+		if(dto.getPrice() != null) updateHotel.setPrice(dto.getPrice());
+		if(dto.getCondition() != null) updateHotel.setCondition(dto.getCondition());
+		if(dto.getContactNumber() != null) updateHotel.setContactNumber(dto.getContactNumber());
+		if(dto.getTermsAndCondition() != null) updateHotel.setTermsAndCondition(dto.getTermsAndCondition());
 		updateHotel.setNegotiable(dto.isNegotiable());
-		updateHotel.setCondition(dto.getCondition());
-		updateHotel.setRatingCount(dto.getRatingCount());
-		updateHotel.setContactNumber(dto.getContactNumber());
-		updateHotel.setTermsAndCondition(dto.getTermsAndCondition());
 
 		return repository.save(updateHotel);
 	}

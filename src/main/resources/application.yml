@@ -1,11 +1,11 @@
 server:
-  port: 5000
+  port: 8080
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/hotel
     username: postgres
-    password:
+    password: 
   jpa:
     show-sql: true
     generate-ddl: true
@@ -27,7 +27,7 @@ cloud:
   aws:
     credentials:
       access-key: AKIAXTNJP66PWCGJ3ANV
-      secret-key: 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
+      secret-key: 
     region:
       static: ap-southeast-1
     stack:

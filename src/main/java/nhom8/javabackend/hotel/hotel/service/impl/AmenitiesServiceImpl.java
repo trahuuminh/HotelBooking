@@ -2,8 +2,6 @@ package nhom8.javabackend.hotel.hotel.service.impl;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +29,7 @@ public class AmenitiesServiceImpl implements AmenitiesService {
 	}
 
 	@Override
-	public Amenities addNewAmenities(@Valid CreateAmenitiesDto dto) {
+	public Amenities addNewAmenities(CreateAmenitiesDto dto) {
 		Amenities newAmenitie = new Amenities();
 
 		newAmenitie.setGuestRoom(dto.getGuestRoom());
@@ -46,7 +44,7 @@ public class AmenitiesServiceImpl implements AmenitiesService {
 	}
 
 	@Override
-	public Amenities updateAmenities(@Valid UpdateAmenitiesDto dto) {
+	public Amenities updateAmenities(UpdateAmenitiesDto dto) {
 		Amenities updateAmenitie = repository.getById(dto.getId());
 		
 		updateAmenitie.setGuestRoom(dto.getGuestRoom());
